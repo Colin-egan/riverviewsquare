@@ -1,45 +1,40 @@
-# eganlab-site-template
+# riverview-square.com
 
-The template every Egan Lab client site is cloned from.
-`scripts/new-site.mjs` in the business-suite repo runs
-`gh repo create <client-id> --template Colin-egan/eganlab-site-template --private`.
+The Riverview Square site. Cloned from `eganlab-site-template`, then given a
+visual identity — which is exactly what the template README forbids doing *to the
+template*. **The template's "what must never go in it" rule does not apply here.**
+This is a client site; the palette, type scale, and section layouts belong in it.
 
-## Status
+Riverview Square is a 4-acre mixed-use destination at 50 College Street in
+downtown Clarksville, Tennessee: a 156-room DoubleTree by Hilton (an adaptive
+reuse of the original Riverview Inn) plus retail, dining and entertainment,
+next to the 6,000-seat F&M Bank Arena.
 
-Complete and working. `npm run build`, `npm test`, and `npm run a11y` all pass.
+## The fact rule
 
-**Test coverage is partial by decision.** `lib/content.ts` has a full suite (30 tests).
-`lib/contact-schema.ts` and `scripts/lib/violations.mjs` were built without unit tests —
-both are small and pure, and both are exercised end to end by the contact route and the
-a11y gate respectively, but neither has a regression guard. Worth adding before either
-grows.
+`content/project.ts` is the fact base. Every business fact on the site traces to
+it, to a linked press item, or to a client-supplied file. Unknown values are
+`null` and render through `placeholder()` as a visible bracketed gap. A
+realistic-looking invented value is how a wrong number reaches a real client.
 
-The accessibility gate has been verified to actually fail: breaking `app/page.tsx` with a
-missing `alt` and a low-contrast heading made it exit 1 reporting `image-alt` (critical)
-and `color-contrast` (serious). The contrast finding is the meaningful one — it is only
-producible by a real browser computing styles, so it confirms the gate is not inert.
+## Known defects inherited from the Squarespace site
 
-## What this template is for
+- The published leasing email `liz.craig@foundrycommmercial.com` (three m's) has
+  no MX record and bounces. `leasing.email` stays `null` until the client
+  confirms the real address.
+- Retail square footage was published as both 45,000 and 55,000.
+  `retailSquareFeet` stays `null` until the client picks one.
+- The site advertised a June 2024 delivery and a "Coming Soon" badge while the
+  hotel was already open and booking.
 
-It carries the parts of a site that are **identical on every correct build and invisible
-in a screenshot**: semantic landmarks, a working skip link, focus-visible styles,
-keyboard-navigable nav, a labelled contact form with announced errors, metadata and Open
-Graph defaults, `sitemap.ts`, `robots.ts`, and a blocking accessibility gate.
+## Provisional as of this build
 
-## What must never go in it
+Two things are not yet finished and should not be read as such:
 
-No colour palette. No type scale. No spacing rhythm. No section layouts. No component
-whose job is to look like something.
-
-`context/services.md` promises clients "Custom design (not a template)". That promise is
-also what distinguishes this studio from Wix and Squarespace. A starter carrying visual
-identity means every Egan Lab site shares a silhouette, and after ten clients the promise
-is false — visibly, to any prospect who opens two of the sites side by side.
-
-This boundary erodes by default. The second or third time you write a hero section, the
-pull is to lift the last one in here. That is the moment the promise quietly breaks. If
-you are about to add something visual, you are making a business decision, not a
-technical one.
+- **Brand tokens are placeholders.** No palette, type scale, or spacing rhythm
+  here comes from the client's brand book yet — that lands in Task 2.
+- **No client photography exists yet.** Any imagery in the repo through this
+  task is a stand-in, not client-supplied — that lands in Task 4.
 
 ## Commands
 
@@ -47,26 +42,26 @@ technical one.
 |---|---|
 | `npm run dev` | Local site on :3000 |
 | `npm run build` | Production build |
-| `npm test` | Content reader tests |
+| `npm test` | Vitest suite |
 | `npm run a11y` | Build, then walk every sitemap route with axe. Blocks on serious/critical. |
+| `npm run tokens` | Regenerate `app/tokens.css` from `brand/tokens.json` |
+| `npm run basemap` | Rebuild `public/basemap/clarksville.pmtiles` from the Protomaps daily build |
 
 `npm run a11y` needs Chromium once per machine: `npx playwright install chromium`.
 
 ## Accessibility
 
-Target is WCAG 2.2 AA. `npm run a11y` blocks on serious and critical
-violations, but axe catches roughly a third to a half of real failures — it will never
-flag a keyboard trap, meaningless alt text, or a heading order that is valid and
-nonsense. The manual checklist in the `new-site` skill, step 5, is the rest of the gate.
-Never tell a client the site is accessible on the strength of the script alone.
+Target is WCAG 2.2 AA. `npm run a11y` blocks on serious and critical violations,
+but axe catches roughly a third to a half of real failures. The district map is
+the sharp edge: a WebGL canvas is opaque to assistive technology, so the amenity
+**list** is the primary representation and renders server-side on every request.
+The map is an enhancement layered over it. Never remove the list.
 
 ## Environment
 
 | Var | Purpose |
 |---|---|
-| `RESEND_API_KEY` | Contact form delivery |
-| `CONTACT_TO_EMAIL` | Where enquiries go |
+| `RESEND_API_KEY` | Contact and leasing form delivery |
+| `CONTACT_TO_EMAIL` | Where general enquiries go |
+| `LEASING_TO_EMAIL` | Where leasing enquiries go (Foundry Commercial) |
 | `SITE_URL` | Production origin, used by `sitemap.ts` and `robots.ts` |
-
-Missing `RESEND_API_KEY` or `CONTACT_TO_EMAIL` makes
-the contact route return 500. It never reports success for an email it did not send.
