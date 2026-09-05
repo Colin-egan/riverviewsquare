@@ -159,3 +159,16 @@ p { text-wrap: pretty; max-width: var(--measure); }
 .footer h2 { margin-bottom: 0.9rem; }
 .footer__links { list-style: none; margin: 0; padding: 0; }
 .footer__links li { margin-bottom: 0.35rem; }
+
+.band { padding-block: var(--band); }
+.band[data-tone="ink"] { background: var(--color-ink); color: var(--color-paper); }
+.band[data-tone="limestone"] { background: var(--color-limestone); }
+.band__inner {
+  max-width: 78rem;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 3rem);
+}
+.band[data-bleed="true"] .band__inner { max-width: none; padding-inline: 0; }
+.band__eyebrow { color: var(--color-brick); margin: 0 0 0.75rem; }
+.band[data-tone="ink"] .band__eyebrow { color: var(--color-limestone); }
+.band h2 { margin-bottom: 1.5rem; }
