@@ -2,12 +2,20 @@ import { describe, expect, it } from "vitest"
 import { contrastRatio } from "@/lib/contrast"
 import tokens from "./tokens.json"
 
+/**
+ * The groups a pair reference may name. Declared as an annotated record rather
+ * than casting `tokens` itself: tokens.$comment is a string, so asserting the
+ * whole object to Record<string, Record<string, string>> does not typecheck.
+ */
+const groups: Record<string, Record<string, string>> = {
+  colors: tokens.colors,
+  on: tokens.on,
+}
+
 /** "river" -> colors.river; "on.river" -> on.river */
 function resolve(ref: string): string {
   const [head, tail] = ref.split(".")
-  const value = tail
-    ? (tokens as Record<string, Record<string, string>>)[head]?.[tail]
-    : tokens.colors[head as keyof typeof tokens.colors]
+  const value = tail ? groups[head]?.[tail] : groups.colors[head]
   if (!value) throw new Error(`Unknown token reference: ${ref}`)
   return value
 }
