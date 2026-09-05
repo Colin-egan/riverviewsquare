@@ -1,0 +1,17 @@
+{
+  "scrapedAt": "2026-08-03",
+  "startUrl": "https://bullcityplumbing.com",
+  "business": null,
+  "pages": [
+    {
+      "url": "https://bullcityplumbing.com/",
+      "meta": { "title": "Bull City Plumbing", "description": null },
+      "headings": [{ "level": 1, "text": "Bull City Plumbing" }],
+      "paragraphs": ["Licensed plumbers serving Durham since two thousand four."],
+      "tel": [],
+      "email": [],
+      "wordCount": 9,
+      "bodyWordCount": 30
+    }
+  ]
+}

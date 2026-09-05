@@ -1,0 +1,19 @@
+{
+  "scrapedAt": "2026-08-03",
+  "startUrl": "https://elmosdiner.com",
+  "business": {
+    "name": "Elmo's Diner",
+    "phone": "(919) 929-2909",
+    "email": null,
+    "street": null,
+    "city": "Carrboro",
+    "state": "NC",
+    "postalCode": null,
+    "hours": [],
+    "sameAs": []
+  },
+  "pages": [
+    { "meta": { "title": "Menu" }, "headings": [], "paragraphs": ["No url here either."] },
+    { "meta": { "title": "Contact" }, "headings": [], "paragraphs": ["Nor here."] }
+  ]
+}

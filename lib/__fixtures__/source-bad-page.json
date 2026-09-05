@@ -1,0 +1,28 @@
+{
+  "scrapedAt": "2026-08-03",
+  "startUrl": "https://elmosdiner.com",
+  "business": {
+    "name": "Elmo's Diner",
+    "phone": "(919) 929-2909",
+    "email": "hello@elmosdiner.com",
+    "street": "200 N Greensboro St",
+    "city": "Carrboro",
+    "state": "NC",
+    "postalCode": "27510",
+    "hours": ["Monday, Tuesday 07:00-21:00"],
+    "sameAs": ["https://facebook.com/elmosdiner"]
+  },
+  "pages": [
+    {
+      "url": "https://elmosdiner.com/",
+      "meta": { "title": "Elmo's Diner — Carrboro" },
+      "headings": [{ "level": 1, "text": "Elmo's Diner" }],
+      "paragraphs": ["We have served breakfast all day in Carrboro since nineteen eighty-five."]
+    },
+    {
+      "meta": { "title": "Menu" },
+      "headings": [],
+      "paragraphs": ["This page is missing its url field."]
+    }
+  ]
+}
