@@ -85,3 +85,70 @@ p { text-wrap: pretty; max-width: var(--measure); }
   text-transform: uppercase;
   font-weight: 600;
 }
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  padding: 1rem clamp(1rem, 4vw, 3rem);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-ink) 12%, transparent);
+}
+.nav__brand {
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  text-decoration: none;
+  color: var(--color-ink);
+}
+.nav__list {
+  display: flex;
+  gap: clamp(1rem, 2.5vw, 2rem);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.nav__list a {
+  font-size: var(--step--1);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink);
+  text-decoration: none;
+  padding-block: 0.5rem;
+  border-bottom: 2px solid transparent;
+}
+.nav__list a:hover { border-bottom-color: var(--color-river); }
+.nav__list a[aria-current="page"] { border-bottom-color: var(--color-brick); }
+.nav__toggle { display: none; }
+
+@media (max-width: 48rem) {
+  .nav__toggle {
+    display: block;
+    font: inherit;
+    font-size: var(--step--1);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: none;
+    border: 1px solid var(--color-ink);
+    color: var(--color-ink);
+    padding: 0.5rem 0.9rem;
+    cursor: pointer;
+  }
+  .nav__list { display: none; flex-basis: 100%; flex-direction: column; gap: 0; }
+  .nav__list[data-open="true"] { display: flex; }
+  .nav__list li { border-top: 1px solid color-mix(in srgb, var(--color-ink) 12%, transparent); }
+  .nav__list a { display: block; padding: 0.9rem 0; }
+}
+
+.footer { margin-top: var(--band); background: var(--color-limestone); }
+.footer__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 2.5rem;
+  padding: 3rem clamp(1rem, 4vw, 3rem);
+}
+.footer address { font-style: normal; }
+.footer p { margin: 0 0 0.35rem; }
+.footer h2 { margin-bottom: 0.9rem; }
+.footer__links { list-style: none; margin: 0; padding: 0; }
+.footer__links li { margin-bottom: 0.35rem; }
