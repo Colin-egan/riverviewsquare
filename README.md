@@ -31,8 +31,10 @@ realistic-looking invented value is how a wrong number reaches a real client.
 
 Two things are not yet finished and should not be read as such:
 
-- **Brand tokens are placeholders.** No palette, type scale, or spacing rhythm
-  here comes from the client's brand book yet — that lands in Task 2.
+- **Brand tokens are provisional, not the client's brand book.** The client
+  has not supplied brand guidelines. `brand/tokens.json` holds a provisional
+  palette and type scale, gated on WCAG AA by `brand/tokens.test.ts`. See
+  `TOKENS-PENDING.md` for how to swap in the real brand book when it arrives.
 - **No client photography exists yet.** Any imagery in the repo through this
   task is a stand-in, not client-supplied — that lands in Task 4.
 

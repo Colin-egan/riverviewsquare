@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "vitest run",
+    "tokens": "node scripts/build-tokens.mjs",
+    "test": "node scripts/build-tokens.mjs --check && vitest run",
     "a11y": "next build && node scripts/a11y.mjs"
   },
   "dependencies": {
