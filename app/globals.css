@@ -140,7 +140,14 @@ p { text-wrap: pretty; max-width: var(--measure); }
   .nav__list a { display: block; padding: 0.9rem 0; }
 }
 
-.footer { margin-top: var(--band); background: var(--color-limestone); }
+.footer {
+  margin-top: var(--band);
+  background: var(--color-limestone);
+  /* Paired foreground. Inheriting --color-ink happens to match today, but the
+     palette is provisional (TOKENS-PENDING.md) — pairing it explicitly keeps
+     footer contrast correct when the real brand colours land. */
+  color: var(--color-on-limestone);
+}
 .footer__grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
