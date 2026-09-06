@@ -38,3 +38,61 @@ export const media = [] as const satisfies readonly MediaItem[]
 
 // Validates at import. A bad entry throws during the build, not at render.
 z.array(mediaSchema).parse(media)
+
+export const plannedMediaSchema = z.object({
+  id: z.string(),
+  /**
+   * What the design calls for, precise enough to hand to a photographer or
+   * the client as a shot-list line — not a restatement of the id. e.g.
+   * "DoubleTree façade from College Street at dusk", not "hero image".
+   */
+  need: z.string().min(15),
+})
+
+export type PlannedMedia = z.infer<typeof plannedMediaSchema>
+
+/**
+ * A registry of shots the design calls for that the client has not yet
+ * delivered a file for. `PlannedMediaId` (lib/data/media.ts) unions with
+ * `MediaId` in Figure's prop type, so a page can reference a not-yet-
+ * supplied image only by first declaring its slot here — the same
+ * `as const satisfies` reasoning as `media` above applies: `parse()` widens
+ * `id` to `string`, which would let a typo compile.
+ *
+ * This is also, deliberately, the photography shot list to hand the client:
+ * every row here is a real gap the design needs filled.
+ *
+ * Starts empty — nothing has been planned yet in this task. Tasks 5, 6, 11,
+ * and 14 each append the slot(s) they need.
+ */
+export const plannedMedia = [] as const satisfies readonly PlannedMedia[]
+
+// Validates at import, exactly as `media` does above.
+z.array(plannedMediaSchema).parse(plannedMedia)
+
+/**
+ * Ids shared between `a` and `b`. Extracted as a plain, independently
+ * testable function (rather than a cross-schema zod refinement) because
+ * `media` and `plannedMedia` are two separately declared `as const`
+ * arrays — there is no single schema to refine — and because a bare
+ * function can be exercised with synthetic duplicate data in a unit test
+ * even while both real registries ship empty. See lib/data/media.test.ts.
+ */
+export function findDuplicateIds(a: readonly { id: string }[], b: readonly { id: string }[]): string[] {
+  const bIds = new Set(b.map((item) => item.id))
+  return a.filter((item) => bIds.has(item.id)).map((item) => item.id)
+}
+
+/**
+ * An id must not exist in both registries: once a real file is delivered
+ * and added to `media`, its slot has to be removed from `plannedMedia`, or
+ * Figure could not tell which branch — real image or placeholder — an id
+ * is meant to take. Checked at import, same posture as the schema
+ * validation above: a violation breaks the build, not the page.
+ */
+const duplicateMediaIds = findDuplicateIds(media, plannedMedia)
+if (duplicateMediaIds.length > 0) {
+  throw new Error(
+    `Media id(s) registered in both media and plannedMedia: ${duplicateMediaIds.join(", ")}. Remove the delivered id from plannedMedia in content/media.ts.`,
+  )
+}

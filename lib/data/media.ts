@@ -1,4 +1,4 @@
-import { media, type MediaItem } from "@/content/media"
+import { media, plannedMedia, type MediaItem, type PlannedMedia } from "@/content/media"
 
 /**
  * Annotated `readonly MediaItem[]` rather than left as `typeof media`: with
@@ -12,7 +12,12 @@ import { media, type MediaItem } from "@/content/media"
 export const ALL_MEDIA: readonly MediaItem[] = media
 export type MediaId = (typeof media)[number]["id"]
 
+/** Same widening as ALL_MEDIA above, and for the same reason. */
+export const ALL_PLANNED_MEDIA: readonly PlannedMedia[] = plannedMedia
+export type PlannedMediaId = (typeof plannedMedia)[number]["id"]
+
 const byId = new Map(ALL_MEDIA.map((m) => [m.id, m]))
+const plannedById = new Map(ALL_PLANNED_MEDIA.map((p) => [p.id, p]))
 
 /** Throws on an unknown id. A missing image should break the build, not the page. */
 export function getMedia(id: MediaId): MediaItem {
@@ -21,4 +26,9 @@ export function getMedia(id: MediaId): MediaItem {
   return item
 }
 
-export type { MediaItem }
+/** The human description of the shot a planned-but-undelivered id names, if registered. */
+export function getPlannedMedia(id: PlannedMediaId): string | undefined {
+  return plannedById.get(id)?.need
+}
+
+export type { MediaItem, PlannedMedia }

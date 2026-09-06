@@ -1,6 +1,7 @@
 import { existsSync } from "node:fs"
 import { describe, expect, it } from "vitest"
-import { ALL_MEDIA, getMedia } from "@/lib/data/media"
+import { findDuplicateIds } from "@/content/media"
+import { ALL_MEDIA, ALL_PLANNED_MEDIA, getMedia, getPlannedMedia } from "@/lib/data/media"
 
 describe("media manifest", () => {
   // Deviation from the task brief (see .superpowers/sdd/task-4-report.md): the
@@ -38,5 +39,58 @@ describe("media manifest", () => {
   it("throws on an unknown id rather than rendering a broken image", () => {
     // @ts-expect-error deliberately invalid id
     expect(() => getMedia("does-not-exist")).toThrow()
+  })
+})
+
+describe("planned media registry", () => {
+  // Covers the Task 4 review finding: Figure's id prop was typed
+  // `MediaId | (string & {})`, which is structurally just `string` and so
+  // accepts any typo forever, not just while the manifest is empty. The fix
+  // replaces that escape hatch with this second closed union — a real
+  // registry of shots the design has asked for but the client hasn't
+  // delivered files for. These tests cover plannedMedia itself; the
+  // "does-not-exist" @ts-expect-error test above still proves an id in
+  // neither registry is a compile error.
+
+  it("is a real array", () => {
+    expect(Array.isArray(ALL_PLANNED_MEDIA)).toBe(true)
+  })
+
+  it("has unique ids", () => {
+    const ids = ALL_PLANNED_MEDIA.map((p) => p.id)
+    expect(new Set(ids).size).toBe(ids.length)
+  })
+
+  it.each(ALL_PLANNED_MEDIA)("$id has a real description of the needed shot", ({ need }) => {
+    expect(need.length).toBeGreaterThanOrEqual(15)
+  })
+
+  it("returns undefined for an id with no planned entry", () => {
+    // @ts-expect-error deliberately invalid id
+    expect(getPlannedMedia("does-not-exist")).toBeUndefined()
+  })
+
+  it("shares no id with the delivered media registry", () => {
+    expect(findDuplicateIds(ALL_MEDIA, ALL_PLANNED_MEDIA)).toEqual([])
+  })
+})
+
+describe("findDuplicateIds", () => {
+  // Exercises the duplicate-id guard with synthetic data, since both real
+  // registries ship empty right now and can't demonstrate a collision.
+  it("returns ids present in both lists", () => {
+    const a = [{ id: "home-hero" }, { id: "lobby" }]
+    const b = [{ id: "lobby" }, { id: "retail-court" }]
+    expect(findDuplicateIds(a, b)).toEqual(["lobby"])
+  })
+
+  it("returns an empty array when the lists don't overlap", () => {
+    const a = [{ id: "home-hero" }]
+    const b = [{ id: "retail-court" }]
+    expect(findDuplicateIds(a, b)).toEqual([])
+  })
+
+  it("returns an empty array for two empty lists", () => {
+    expect(findDuplicateIds([], [])).toEqual([])
   })
 })
