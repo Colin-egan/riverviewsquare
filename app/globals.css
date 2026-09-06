@@ -172,3 +172,50 @@ p { text-wrap: pretty; max-width: var(--measure); }
 .band__eyebrow { color: var(--color-brick); margin: 0 0 0.75rem; }
 .band[data-tone="ink"] .band__eyebrow { color: var(--color-limestone); }
 .band h2 { margin-bottom: 1.5rem; }
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 2rem;
+  margin: 0;
+}
+.stats__item { border-top: 2px solid var(--color-brick); padding-top: 1rem; }
+.stats__label { margin: 0 0 0.4rem; }
+.stats__value { font-family: var(--font-display); font-size: var(--step-4); margin: 0; line-height: 1; }
+
+.hero { position: relative; isolation: isolate; }
+.hero__media { display: block; }
+.hero__media img {
+  width: 100%;
+  height: clamp(24rem, 70vh, 44rem);
+  object-fit: cover;
+  /* The river bend, as a mask on the hero's lower edge. */
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 600' preserveAspectRatio='none'%3E%3Cpath d='M0 0 H1200 V540 C1020 540 940 585 760 585 S480 552 300 552 S60 576 0 576 Z' fill='%23fff'/%3E%3C/svg%3E");
+  -webkit-mask-size: 100% 100%;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 600' preserveAspectRatio='none'%3E%3Cpath d='M0 0 H1200 V540 C1020 540 940 585 760 585 S480 552 300 552 S60 576 0 576 Z' fill='%23fff'/%3E%3C/svg%3E");
+  mask-size: 100% 100%;
+}
+.hero__media figcaption { display: none; }
+.hero__copy {
+  max-width: 78rem;
+  margin-inline: auto;
+  padding: 2.5rem clamp(1rem, 4vw, 3rem) 0;
+}
+.hero__tagline { font-size: var(--step-2); max-width: 34ch; margin: 1rem 0 0; }
+.hero__actions { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2rem; max-width: none; }
+
+.button {
+  display: inline-block;
+  font-size: var(--step--1);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 0.95rem 1.6rem;
+  border: 2px solid transparent;
+}
+.button--primary { background: var(--color-signal); color: var(--color-on-signal); }
+.button--primary:hover { background: var(--color-river); color: var(--color-on-river); }
+.button--ghost { border-color: currentColor; color: inherit; }
+.button--ghost:hover { background: var(--color-ink); color: var(--color-paper); }
+.band[data-tone="ink"] .button--ghost:hover { background: var(--color-paper); color: var(--color-ink); }

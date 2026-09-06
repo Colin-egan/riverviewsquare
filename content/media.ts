@@ -65,7 +65,14 @@ export type PlannedMedia = z.infer<typeof plannedMediaSchema>
  * Starts empty — nothing has been planned yet in this task. Tasks 5, 6, 11,
  * and 14 each append the slot(s) they need.
  */
-export const plannedMedia = [] as const satisfies readonly PlannedMedia[]
+export const plannedMedia = [
+  {
+    id: "home-hero",
+    // The one full-bleed image that carries the home page (Optimist Hall
+    // move) — a shot list line precise enough to hand a photographer.
+    need: "Wide establishing exterior of Riverview Square from College Street at dusk: the DoubleTree by Hilton Clarksville Riverview façade and ground-floor retail storefronts in one frame, shot on a roughly 2:1 crop so it reads full-bleed behind a masked lower edge.",
+  },
+] as const satisfies readonly PlannedMedia[]
 
 // Validates at import, exactly as `media` does above.
 z.array(plannedMediaSchema).parse(plannedMedia)
