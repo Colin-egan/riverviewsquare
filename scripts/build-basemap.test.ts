@@ -19,13 +19,26 @@ describe("basemap extract", () => {
     expect(header[7]).toBe(3)
   })
 
+  it("carries the zoom level the extract script asks for", () => {
+    // Spec: header byte 100 is min zoom, byte 101 is max zoom. The Protomaps
+    // planet build caps at z15, so a MAXZOOM above that is silently clamped —
+    // this catches the script promising a level the archive does not have.
+    const fd = openSync(PMTILES, "r")
+    const header = Buffer.alloc(102)
+    readSync(fd, header, 0, 102, 0)
+    const source = readFileSync(SCRIPT, "utf-8")
+    const maxzoom = source.match(/const MAXZOOM = (\d+)/)
+    if (!maxzoom) throw new Error(`could not find "const MAXZOOM = <n>" in ${SCRIPT}`)
+    expect(header[101]).toBe(Number(maxzoom[1]))
+  })
+
   it("is small enough to serve and to commit", () => {
     const mb = statSync(PMTILES).size / 1024 / 1024
     expect(mb).toBeGreaterThan(0.1)
     expect(mb).toBeLessThan(40)
   })
 
-  it("covers a bbox that contains every amenity", () => {
+  it("was extracted from the same bbox every amenity is tested inside", () => {
     // Guards the two constants drifting apart: scripts/build-basemap.mjs holds
     // its own copy of the box, so if someone tightens one and not the other,
     // pins fall off the tiles.

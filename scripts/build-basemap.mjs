@@ -17,7 +17,15 @@ import { execFileSync } from "node:child_process"
 import { mkdirSync, statSync } from "node:fs"
 
 const BBOX = { minLng: -87.4, minLat: 36.5, maxLng: -87.32, maxLat: 36.56 }
-const MAXZOOM = 16 // Street and building detail. Each extra level roughly doubles the file.
+/**
+ * The Protomaps planet build is itself z0-z15 (`pmtiles show
+ * https://build.protomaps.com/<key>` reports max zoom 15), so this is a
+ * ceiling, not a request: passing 16 does not produce a z16 level, it is
+ * silently clamped to 15 and the log line then misreports what was written.
+ * MapLibre overzooms past a source's maxzoom by scaling the deepest tile, so
+ * z15 still renders at street level in Task 9.
+ */
+const MAXZOOM = 15
 const OUTPUT = "public/basemap/clarksville.pmtiles"
 
 const builds = await (await fetch("https://build-metadata.protomaps.dev/builds.json")).json()
