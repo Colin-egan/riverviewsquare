@@ -171,6 +171,13 @@ p { text-wrap: pretty; max-width: var(--measure); }
 .band[data-bleed="true"] .band__inner { max-width: none; padding-inline: 0; }
 .band__eyebrow { color: var(--color-brick); margin: 0 0 0.75rem; }
 .band[data-tone="ink"] .band__eyebrow { color: var(--color-limestone); }
+/* Brick-on-limestone is not a validated pair in brand/tokens.json (only
+   ink-on-limestone and on.brick-on-brick are) — it fails WCAG AA contrast.
+   Repoint eyebrow-styled text to ink, the validated pair, whenever it sits
+   on a limestone-toned band. */
+.band[data-tone="limestone"] .band__eyebrow,
+.band[data-tone="limestone"] .thennow__label { color: var(--color-ink); }
+.band h1 { margin-bottom: 1.5rem; }
 .band h2 { margin-bottom: 1.5rem; }
 
 .stats {
@@ -227,3 +234,18 @@ p { text-wrap: pretty; max-width: var(--measure); }
 .button--ghost { border-color: currentColor; color: inherit; }
 .button--ghost:hover { background: var(--color-ink); color: var(--color-paper); }
 .band[data-tone="ink"] .button--ghost:hover { background: var(--color-paper); color: var(--color-ink); }
+
+.thennow { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: 2rem; }
+.thennow__label { color: var(--color-brick); margin: 0 0 0.75rem; }
+/* Covers both cases Figure can render: a real <img> once photography exists,
+   and — today, with the media registry empty — the .figure__placeholder
+   <div>. Two class selectors beats .figure__placeholder's one, so the 4/3
+   ratio wins over its 16/9 default regardless of source order; placed after
+   it here anyway so the override reads in place. */
+.thennow img,
+.thennow .figure__placeholder {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  aspect-ratio: 4 / 3;
+}

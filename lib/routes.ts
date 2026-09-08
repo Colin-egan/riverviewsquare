@@ -14,6 +14,7 @@ export type Route = {
  */
 export const SITE_ROUTES: readonly Route[] = [
   { href: "/", label: "Home", inNav: false, changeFrequency: "monthly", priority: 1 },
+  { href: "/about", label: "About", inNav: true, changeFrequency: "yearly", priority: 0.8 },
   { href: "/contact", label: "Contact", inNav: true, changeFrequency: "yearly", priority: 0.5 },
 ] as const
 

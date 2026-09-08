@@ -72,6 +72,24 @@ export const plannedMedia = [
     // move) — a shot list line precise enough to hand a photographer.
     need: "Wide establishing exterior of Riverview Square from College Street at dusk: the DoubleTree by Hilton Clarksville Riverview façade and ground-floor retail storefronts in one frame, shot on a roughly 2:1 crop so it reads full-bleed behind a masked lower edge.",
   },
+  {
+    id: "riverview-inn-historic",
+    // Half of the About page's then-and-now pair. Archival source, not a
+    // new photograph: needs a period exterior of the ORIGINAL Riverview
+    // Inn — pre-renovation signage, an old motor-inn massing, and cars or
+    // details that read as decades old — so a viewer clocks "historic
+    // photograph" before reading the caption, never mistaking it for the
+    // current DoubleTree.
+    need: "Archival exterior photograph of the original Riverview Inn at 50 College Street before renovation, showing the period Riverview Inn signage, its motor-inn-era massing and entrance, and any visible period cars or streetscape details that date the image at a glance — sourced from the property's historic archive, not shot new.",
+  },
+  {
+    id: "doubletree-exterior",
+    // The other half of the then-and-now pair. Must read as unmistakably
+    // present-day: current DoubleTree branding and the reworked street-
+    // facing entrance, shot in daylight with modern signage and streetscape
+    // in frame so it cannot be confused with the historic Riverview Inn shot.
+    need: "Current daylight exterior of the DoubleTree by Hilton Clarksville Riverview at 50 College Street, framed to show the DoubleTree by Hilton entrance signage, the reworked street-facing entrance and ground-floor glazing, and modern streetscape (parked cars, lighting, landscaping) that unmistakably reads as present-day.",
+  },
 ] as const satisfies readonly PlannedMedia[]
 
 // Validates at import, exactly as `media` does above.
