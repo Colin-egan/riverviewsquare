@@ -257,7 +257,6 @@ p { text-wrap: pretty; max-width: var(--measure); }
 }
 /* MapLibre's default control chrome is Mapbox blue. Repaint it. */
 .districtmap .maplibregl-ctrl-group { border-radius: 0; box-shadow: none; border: 1px solid var(--color-ink); }
-.districtmap .maplibregl-ctrl-attrib { font-size: 0.7rem; background: color-mix(in srgb, var(--color-paper) 85%, transparent); }
 
 /* The Protomaps/OpenStreetMap credit, rendered as a real sibling of the
    aria-hidden map canvas rather than inside it. Small, quiet, legible. */
