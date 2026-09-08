@@ -249,3 +249,43 @@ p { text-wrap: pretty; max-width: var(--measure); }
   object-fit: cover;
   aspect-ratio: 4 / 3;
 }
+
+.districtmap {
+  width: 100%;
+  height: clamp(22rem, 65vh, 40rem);
+  background: var(--map-land);
+}
+/* MapLibre's default control chrome is Mapbox blue. Repaint it. */
+.districtmap .maplibregl-ctrl-group { border-radius: 0; box-shadow: none; border: 1px solid var(--color-ink); }
+.districtmap .maplibregl-ctrl-attrib { font-size: 0.7rem; background: color-mix(in srgb, var(--color-paper) 85%, transparent); }
+
+.pin {
+  width: 1.05rem;
+  height: 1.05rem;
+  border-radius: 50%;
+  border: 2px solid var(--color-paper);
+  cursor: pointer;
+  padding: 0;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.35);
+  transition: transform 120ms ease;
+}
+.pin[data-category="food-drink"] { background: var(--color-brick); }
+.pin[data-category="art"]        { background: var(--color-river); }
+.pin[data-category="music"]      { background: var(--color-signal); }
+.pin[data-category="retail"]     { background: var(--color-ink); }
+.pin[data-category="hospitality"]{ background: var(--color-river); }
+.pin[data-category="development"]{ background: var(--color-brick); }
+.pin[data-category="outdoors"]   { background: var(--color-signal); }
+
+/* The project itself: larger, ringed, unmistakable. */
+.pin[data-anchor="true"] {
+  width: 1.6rem;
+  height: 1.6rem;
+  border-width: 3px;
+  box-shadow: 0 0 0 3px var(--color-brick), 0 1px 4px rgb(0 0 0 / 0.4);
+}
+.pin[data-selected="true"] { transform: scale(1.45); }
+
+@media (prefers-reduced-motion: reduce) {
+  .pin { transition: none; }
+}
