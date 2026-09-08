@@ -259,23 +259,28 @@ p { text-wrap: pretty; max-width: var(--measure); }
 .districtmap .maplibregl-ctrl-group { border-radius: 0; box-shadow: none; border: 1px solid var(--color-ink); }
 .districtmap .maplibregl-ctrl-attrib { font-size: 0.7rem; background: color-mix(in srgb, var(--color-paper) 85%, transparent); }
 
+/* The Protomaps/OpenStreetMap credit, rendered as a real sibling of the
+   aria-hidden map canvas rather than inside it. Small, quiet, legible. */
+.districtmap-frame__attribution {
+  margin: 0.4rem 0 0;
+  font-size: 0.7rem;
+  color: color-mix(in srgb, var(--color-ink) 70%, transparent);
+}
+.districtmap-frame__attribution a { color: inherit; }
+
 .pin {
   width: 1.05rem;
   height: 1.05rem;
   border-radius: 50%;
   border: 2px solid var(--color-paper);
+  /* Set per-element from AMENITY_CATEGORIES in DistrictMap.tsx — the single
+     source of truth for category colour, also read by Task 10's filter chips. */
+  background: var(--pin-color);
   cursor: pointer;
   padding: 0;
   box-shadow: 0 1px 3px rgb(0 0 0 / 0.35);
   transition: transform 120ms ease;
 }
-.pin[data-category="food-drink"] { background: var(--color-brick); }
-.pin[data-category="art"]        { background: var(--color-river); }
-.pin[data-category="music"]      { background: var(--color-signal); }
-.pin[data-category="retail"]     { background: var(--color-ink); }
-.pin[data-category="hospitality"]{ background: var(--color-river); }
-.pin[data-category="development"]{ background: var(--color-brick); }
-.pin[data-category="outdoors"]   { background: var(--color-signal); }
 
 /* The project itself: larger, ringed, unmistakable. */
 .pin[data-anchor="true"] {

@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react"
 import { Map as MapLibreMap, Marker, NavigationControl, addProtocol } from "maplibre-gl"
 import { Protocol } from "pmtiles"
 import { buildMapStyle, type MapTokens } from "@/lib/map-style"
-import { DISTRICT_BBOX, type Amenity, type AmenityCategory } from "@/lib/data/amenities"
+import { AMENITY_CATEGORIES, DISTRICT_BBOX, type Amenity, type AmenityCategory } from "@/lib/data/amenities"
 import "maplibre-gl/dist/maplibre-gl.css"
 
 // Registered once per module, not per mount: maplibre throws on a duplicate
@@ -44,11 +44,12 @@ export default function DistrictMap({ amenities, activeCategories, selectedSlug,
 
   // Initialise once.
   useEffect(() => {
-    if (!containerRef.current || mapRef.current) return
+    const container = containerRef.current
+    if (!container || mapRef.current) return
     registerPmtilesProtocol()
 
     const map = new MapLibreMap({
-      container: containerRef.current,
+      container,
       style: buildMapStyle(readMapTokens()),
       center: [center.lng, center.lat],
       zoom: 15.2,
@@ -59,13 +60,29 @@ export default function DistrictMap({ amenities, activeCategories, selectedSlug,
         [DISTRICT_BBOX.minLng, DISTRICT_BBOX.minLat],
         [DISTRICT_BBOX.maxLng, DISTRICT_BBOX.maxLat],
       ],
-      attributionControl: { compact: false },
+      // Rendered ourselves, outside this aria-hidden container — see the
+      // <p className="districtmap-frame__attribution"> below.
+      attributionControl: false,
       // The list beside it is the keyboard path; a focusable canvas that cannot
       // be operated meaningfully is a tab stop that wastes a keyboard user's time.
       keyboard: false,
     })
 
     map.addControl(new NavigationControl({ showCompass: false }), "top-right")
+
+    // NavigationControl injects real <button type="button"> elements into this
+    // container. The container is aria-hidden (the amenity list is the
+    // accessible representation of the map), so a button left focusable here
+    // would be a keyboard tab stop assistive tech can give no accessible name
+    // to — WCAG 4.1.2, flagged by axe's aria-hidden-focus rule. keyboard:false
+    // above only turns off MapLibre's camera key handler, not DOM tab order,
+    // so the buttons have to be pulled out of the tab sequence by hand. Do not
+    // "clean this up" — it is load-bearing, not leftover.
+    for (const button of container.querySelectorAll<HTMLButtonElement>("button")) {
+      button.tabIndex = -1
+      button.setAttribute("aria-hidden", "true")
+    }
+
     mapRef.current = map
 
     return () => {
@@ -93,11 +110,24 @@ export default function DistrictMap({ amenities, activeCategories, selectedSlug,
     for (const amenity of visible) {
       if (markersRef.current.has(amenity.slug)) continue
 
+      // AMENITY_CATEGORIES is the single source of truth for category colour
+      // (Task 10's filter chips read the same colorVar) — the pin looks it up
+      // rather than duplicating a category -> colour map in CSS. .find can
+      // return undefined for an arbitrary string, but amenity.category is the
+      // closed AmenityCategory union and AMENITY_CATEGORIES covers every
+      // member, so a miss here means the two have drifted apart; fail loudly
+      // instead of asserting past it.
+      const categoryDef = AMENITY_CATEGORIES.find((c) => c.id === amenity.category)
+      if (!categoryDef) {
+        throw new Error(`No colour defined for amenity category "${amenity.category}"`)
+      }
+
       const el = document.createElement("button")
       el.type = "button"
       el.className = "pin"
       el.dataset.category = amenity.category
       el.dataset.anchor = String(amenity.isAnchor)
+      el.style.setProperty("--pin-color", `var(${categoryDef.colorVar})`)
       // The pin duplicates a list item that is already reachable and labelled,
       // so it is hidden from the accessibility tree rather than announced twice.
       el.setAttribute("aria-hidden", "true")
@@ -137,12 +167,30 @@ export default function DistrictMap({ amenities, activeCategories, selectedSlug,
   }, [selectedSlug, amenities])
 
   return (
-    <div
-      ref={containerRef}
-      className="districtmap"
-      aria-hidden="true"
-      tabIndex={-1}
-      data-testid="district-map"
-    />
+    <div className="districtmap-frame">
+      <div
+        ref={containerRef}
+        className="districtmap"
+        aria-hidden="true"
+        tabIndex={-1}
+        data-testid="district-map"
+      />
+      {/*
+        A sibling of the aria-hidden map container, not a child of it — the
+        ODbL Produced Work licence on the Protomaps basemap requires this
+        credit stay visible, reachable and clickable, which an aria-hidden
+        subtree cannot offer. The string form of this same attribution lives
+        on the map source in lib/map-style.ts, for MapLibre's own benefit.
+      */}
+      <p className="districtmap-frame__attribution">
+        <a href="https://protomaps.com" target="_blank" rel="noopener noreferrer">
+          Protomaps
+        </a>
+        {" © "}
+        <a href="https://openstreetmap.org" target="_blank" rel="noopener noreferrer">
+          OpenStreetMap
+        </a>
+      </p>
+    </div>
   )
 }
