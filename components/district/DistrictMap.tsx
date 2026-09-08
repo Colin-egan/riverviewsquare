@@ -5,6 +5,7 @@ import { Map as MapLibreMap, Marker, NavigationControl, addProtocol } from "mapl
 import { Protocol } from "pmtiles"
 import { buildMapStyle, type MapTokens } from "@/lib/map-style"
 import { AMENITY_CATEGORIES, DISTRICT_BBOX, type Amenity, type AmenityCategory } from "@/lib/data/amenities"
+import { filterAmenities } from "@/components/district/useAmenityFilter"
 import "maplibre-gl/dist/maplibre-gl.css"
 
 // Registered once per module, not per mount: maplibre throws on a duplicate
@@ -97,7 +98,7 @@ export default function DistrictMap({ amenities, activeCategories, selectedSlug,
     const map = mapRef.current
     if (!map) return
 
-    const visible = amenities.filter((a) => a.isAnchor || activeCategories.has(a.category))
+    const visible = filterAmenities(amenities, activeCategories)
     const visibleSlugs = new Set(visible.map((a) => a.slug))
 
     for (const [slug, marker] of markersRef.current) {
