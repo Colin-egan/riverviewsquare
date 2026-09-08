@@ -12,16 +12,15 @@ type Props = {
 export default function CategoryFilter({ active, onToggle, onClear, resultCount }: Props) {
   return (
     <div className="filters">
-      <h3 className="eyebrow filters__legend" id="filter-legend">
+      <h2 className="eyebrow filters__legend" id="filter-legend">
         Filter by
-      </h3>
+      </h2>
       <div className="filters__row" role="group" aria-labelledby="filter-legend">
         {AMENITY_CATEGORIES.map(({ id, label }) => (
           <button
             key={id}
             type="button"
             className="chip"
-            data-category={id}
             aria-pressed={active.has(id)}
             onClick={() => onToggle(id)}
           >

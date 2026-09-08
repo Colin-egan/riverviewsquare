@@ -19,9 +19,11 @@ export default function AmenityList({ amenities, selectedSlug, onSelect }: Props
           <button
             type="button"
             className="amenity"
-            data-category={a.category}
             data-selected={a.slug === selectedSlug}
-            aria-pressed={a.slug === selectedSlug}
+            // aria-current, not aria-pressed: onSelect only ever sets the
+            // selected slug, it never clears one, so this is single-select
+            // navigation between amenities rather than a togglable state.
+            aria-current={a.slug === selectedSlug ? "true" : undefined}
             onClick={() => onSelect(a.slug)}
           >
             <span className="eyebrow amenity__cat">

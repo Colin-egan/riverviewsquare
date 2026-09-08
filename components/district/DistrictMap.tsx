@@ -128,6 +128,11 @@ export default function DistrictMap({ amenities, activeCategories, selectedSlug,
       el.className = "pin"
       el.dataset.category = amenity.category
       el.dataset.anchor = String(amenity.isAnchor)
+      // A marker recreated here (e.g. after a filter round-trip removed and
+      // re-added it) must be born with the current selection state — the
+      // selection effect below only updates markers that already exist, so a
+      // fresh marker with no data-selected would silently desync from the list.
+      el.dataset.selected = String(amenity.slug === selectedSlug)
       el.style.setProperty("--pin-color", `var(${categoryDef.colorVar})`)
       // The pin duplicates a list item that is already reachable and labelled,
       // so it is hidden from the accessibility tree rather than announced twice.
@@ -143,7 +148,7 @@ export default function DistrictMap({ amenities, activeCategories, selectedSlug,
           .addTo(map),
       )
     }
-  }, [amenities, activeCategories, onSelect])
+  }, [amenities, activeCategories, onSelect, selectedSlug])
 
   // Move the camera when the list selection changes.
   useEffect(() => {

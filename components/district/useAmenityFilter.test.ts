@@ -48,4 +48,19 @@ describe("filterAmenities", () => {
     const names = result.slice(1).map((a) => a.name)
     expect(names).toEqual([...names].sort((a, b) => a.localeCompare(b)))
   })
+
+  it("is idempotent: filtering an already-filtered list with the same set changes nothing", () => {
+    // DistrictMap re-filters the already-filtered `visible` list DistrictExplorer
+    // hands it, using the same active set. That composition only works if a
+    // second pass is a no-op — this is the regression test for that invariant.
+    const emptySet = new Set<AmenityCategory>()
+    const onceEmpty = filterAmenities(all, emptySet)
+    const twiceEmpty = filterAmenities(onceEmpty, emptySet)
+    expect(twiceEmpty).toEqual(onceEmpty)
+
+    const artSet = new Set<AmenityCategory>(["art"])
+    const onceArt = filterAmenities(all, artSet)
+    const twiceArt = filterAmenities(onceArt, artSet)
+    expect(twiceArt).toEqual(onceArt)
+  })
 })

@@ -7,7 +7,7 @@ import { getProject } from "@/lib/data/project"
 export const metadata: Metadata = {
   title: "The District",
   description:
-    "Breweries, theatre, coffee, a meadery and a museum — what is within a ten-minute walk of Riverview Square in downtown Clarksville.",
+    "Breweries, a meadery, theatre and a museum — what is around Riverview Square in downtown Clarksville, Tennessee.",
 }
 
 export default function District() {
@@ -23,9 +23,9 @@ export default function District() {
       >
         <p>
           Historic Franklin Street starts a block east. The Cumberland is a block west. Between
-          them: breweries, a meadery, a hundred-year-old theatre, coffee, bakeries, a museum in the
-          1898 customs house, and a {arena.seats.toLocaleString()}-seat arena across the road.
-          Filter the list to see it on the map.
+          them: two breweries, a meadery, the Roxy Regional Theatre, a museum in the 1898 customs
+          house, and a {arena.seats.toLocaleString()}-seat arena across the road. Filter the list
+          to see it on the map.
         </p>
       </Section>
 

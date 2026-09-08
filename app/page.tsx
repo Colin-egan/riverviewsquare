@@ -55,9 +55,9 @@ export default function Home() {
 
       <Section tone="ink" eyebrow="The neighborhood" heading="You are two blocks from everything">
         <p>
-          Historic Franklin Street runs east from the site: breweries, a meadery, a
-          hundred-year-old theatre, coffee, bakeries, and the Customs House Museum, all inside a
-          ten-minute walk. Austin Peay State University sits at the north end of College Street.
+          Historic Franklin Street runs east from the site: two breweries, a meadery, the Roxy
+          Regional Theatre and the Customs House Museum. Austin Peay State University sits at the
+          north end of College Street.
         </p>
         <p style={{ marginTop: "1.5rem" }}>
           <Link href="/district" className="button button--primary">

@@ -275,7 +275,7 @@ p { text-wrap: pretty; max-width: var(--measure); }
   border-radius: 50%;
   border: 2px solid var(--color-paper);
   /* Set per-element from AMENITY_CATEGORIES in DistrictMap.tsx — the single
-     source of truth for category colour, also read by Task 10's filter chips. */
+     source of truth for category colour. */
   background: var(--pin-color);
   cursor: pointer;
   padding: 0;
@@ -328,11 +328,17 @@ p { text-wrap: pretty; max-width: var(--measure); }
   margin-top: 2rem;
   align-items: start;
 }
+.explorer__list { max-height: 40rem; overflow-y: auto; }
 @media (max-width: 60rem) {
   /* List first on narrow screens: it is the primary representation. */
   .explorer__body { grid-template-columns: 1fr; }
+  /* At one column the list is the whole page's content, not a sidebar next
+     to a map — a capped inner scroller here would fight page scroll. This
+     block must come after the unconditional .explorer__list rule above:
+     equal-specificity rules cascade by source order regardless of the media
+     query, so placed earlier this override would lose to the 40rem rule. */
+  .explorer__list { max-height: none; }
 }
-.explorer__list { max-height: 40rem; overflow-y: auto; }
 
 .amenities { list-style: none; margin: 0; padding: 0; }
 .amenity {
