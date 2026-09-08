@@ -50,8 +50,8 @@ export default function Figure({ id, priority = false, sizes = "100vw", classNam
     return (
       <figure className={className} style={{ margin: 0 }}>
         <div
+          className="figure__placeholder"
           style={{
-            aspectRatio: "16 / 9",
             display: "grid",
             placeItems: "center",
             padding: "1.5rem",
