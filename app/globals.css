@@ -366,3 +366,20 @@ p { text-wrap: pretty; max-width: var(--measure); }
 .amenity__cat { color: var(--color-brick); margin: 0; }
 .amenity__name { font-family: var(--font-display); font-size: var(--step-1); }
 .amenity__addr, .amenity__blurb { font-size: var(--step--1); opacity: 0.85; }
+
+.ticklist { list-style: none; margin: 0; padding: 0; max-width: var(--measure); }
+.ticklist li {
+  padding: 0.85rem 0 0.85rem 1.75rem;
+  border-bottom: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+  position: relative;
+}
+.ticklist li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 1.35rem;
+  width: 0.6rem;
+  height: 0.6rem;
+  background: var(--color-brick);
+}
+.band[data-tone="ink"] .ticklist li::before { background: var(--color-signal); }
