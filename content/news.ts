@@ -177,14 +177,16 @@ export const news: NewsItem[] = z.array(newsSchema).parse([
   {
     slug: "50-million-development-announced",
     title: "$50 million development announced between Riverview Inn and downtown arena in Clarksville",
-    // The client's own Squarespace index listed this item as 4/22/21, but
-    // that was their repost date, not the publisher's date. The URL path
-    // below (theleafchronicle.com/.../2019/11/13/...) carries the USA Today
-    // network's real publish date, and the article's own recovered text says
-    // it was announced "the morning after the County Commission approved the
-    // MPEC funding" — Montgomery County approved that funding in November
-    // 2019, not April 2021. Every other item's index date agrees with its
-    // publisher's date; this was the one exception.
+    // The client's own Squarespace index listed this item as 4/22/21. That was
+    // their repost date, not the publisher's: the URL path below carries the
+    // USA Today network's real publish date, 2019/11/13, and the article text
+    // on the old site described the county's arena-funding vote of November
+    // 2019 as having happened the previous day. (That text is not reproduced
+    // here or in task-13-recovered.md — it is the Leaf-Chronicle's copyrighted
+    // article, see the `body: null` note below. Follow the link to read it.)
+    // Rendering "April 22, 2021 · The Leaf-Chronicle" attributed a 2019
+    // newspaper story to a 2021 date. Every other item's index date agrees
+    // with its publisher's date; this was the one exception.
     date: "2019-11-13",
     source: "The Leaf-Chronicle",
     externalUrl: "https://www.theleafchronicle.com/story/news/local/clarksville/2019/11/13/riverview-inn-remodel-50-million-development-announced-near-arena/4177127002/",

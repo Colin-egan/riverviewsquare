@@ -1,6 +1,15 @@
 import { news, type NewsItem } from "@/content/news"
 
-const sorted = [...news].sort((a, b) => Date.parse(b.date) - Date.parse(a.date))
+/**
+ * Newest first. Exported so the sort can be tested against deliberately
+ * shuffled input: content/news.ts is authored in date order, so any assertion
+ * made over the real data passes even if the sort were removed entirely.
+ */
+export function byDateDesc(a: NewsItem, b: NewsItem): number {
+  return Date.parse(b.date) - Date.parse(a.date)
+}
+
+const sorted = [...news].sort(byDateDesc)
 
 export function getNews(): NewsItem[] {
   return sorted

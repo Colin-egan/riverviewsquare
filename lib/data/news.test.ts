@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { news as rawNews } from "@/content/news"
-import { getHostedNews, getNews, getNewsItem } from "@/lib/data/news"
+import { byDateDesc, getHostedNews, getNews, getNewsItem } from "@/lib/data/news"
 
 const news = getNews()
 
@@ -12,6 +12,23 @@ describe("news", () => {
   it("has unique slugs", () => {
     const slugs = news.map((n) => n.slug)
     expect(new Set(slugs).size).toBe(slugs.length)
+  })
+
+  it("sorts newest first even when the input is out of order", () => {
+    // The real content file is authored in date order, so every assertion made
+    // over it passes even with the sort removed. Shuffle a synthetic set and
+    // exercise the comparator directly — this is the only test here that fails
+    // if the ordering logic breaks.
+    const shuffled = [
+      { ...news[0], slug: "oldest", date: "2019-01-01" },
+      { ...news[0], slug: "newest", date: "2024-01-01" },
+      { ...news[0], slug: "middle", date: "2021-06-15" },
+    ]
+    expect([...shuffled].sort(byDateDesc).map((n) => n.slug)).toEqual([
+      "newest",
+      "middle",
+      "oldest",
+    ])
   })
 
   it("is ordered newest first", () => {
