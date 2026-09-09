@@ -18,6 +18,7 @@ export const SITE_ROUTES: readonly Route[] = [
   { href: "/district", label: "The District", inNav: true, changeFrequency: "monthly", priority: 0.9 },
   { href: "/hotel", label: "Hotel", inNav: true, changeFrequency: "yearly", priority: 0.8 },
   { href: "/partners", label: "Partners", inNav: true, changeFrequency: "yearly", priority: 0.6 },
+  { href: "/news", label: "News", inNav: true, changeFrequency: "monthly", priority: 0.6 },
   { href: "/contact", label: "Contact", inNav: true, changeFrequency: "yearly", priority: 0.5 },
 ] as const
 
