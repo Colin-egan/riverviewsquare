@@ -1,12 +1,10 @@
 import { describe, expect, it } from "vitest"
 import { getTenants } from "@/lib/data/tenants"
 import { getAmenities } from "@/lib/data/amenities"
+import { getHotel } from "@/lib/data/hotel"
 
 describe("tenants", () => {
   it("marks every unsigned tenant as coming soon", () => {
-    // The live retail page called The Mailroom and Shelby's Trio "coming soon"
-    // and everything else "nearby" — not signed tenants. Presenting an
-    // unsigned tenant as open is a leasing claim we cannot make.
     for (const t of getTenants()) {
       expect(typeof t.status).toBe("string")
       expect(["open", "coming-soon", "announced"]).toContain(t.status)
@@ -18,28 +16,32 @@ describe("tenants", () => {
     expect(new Set(slugs).size).toBe(slugs.length)
   })
 
-  // Cross-file drift guard. content/tenants.ts and content/amenities.ts each
-  // independently record whether The Mailroom and Shelby's Trio are open —
-  // tenants.ts as `status`, amenities.ts as `comingSoon`, both sourced from
-  // the same fact (the client's live retail page). That is the same fact
-  // held in two places, free to drift apart the moment one file is edited
-  // and the other is not — the same class of bug D2 (the 45k/55k square
-  // footage contradiction) already caught this project doing once. This
-  // test fails the build the moment the two files disagree about a shared
-  // tenant, rather than letting the site quietly assert two different
-  // stories about the same business.
-  it("agrees with the amenities registry on open/coming-soon status for shared tenants", () => {
-    const amenities = getAmenities()
+  // The Mailroom and Shelby's Trio were once listed here as tenants — they
+  // are not; they are downtown neighbours a few blocks away, correctly
+  // amenities.ts non-anchor entries, and it happened once by pulling
+  // published "coming soon" language off the client's own retail page
+  // without checking which heading it sat under ("NOTABLE & NEARBY", not
+  // "AT RIVERVIEW SQUARE"). The one legitimate overlap between the two
+  // files is Riverview Square itself, which amenities.ts marks isAnchor —
+  // that entry is excluded below because it is the development, not a
+  // tenant of it. Anything else that starts appearing in both files is the
+  // same mistake happening again.
+  it("shares no name with a non-anchor amenity", () => {
+    const neighbourNames = new Set(
+      getAmenities()
+        .filter((a) => !a.isAnchor)
+        .map((a) => a.name),
+    )
     for (const tenant of getTenants()) {
-      const amenity = amenities.find((a) => a.name === tenant.name)
-      if (!amenity) continue // Not every tenant is also listed as a district amenity.
-
-      if (tenant.status === "coming-soon") {
-        expect(amenity.comingSoon).toBe(true)
-      }
-      if (tenant.status === "open") {
-        expect(amenity.comingSoon).toBe(false)
-      }
+      expect(neighbourNames.has(tenant.name)).toBe(false)
     }
+  })
+
+  // content/tenants.ts and content/hotel.ts each independently name the
+  // same restaurant — hotel.ts's file comment already warns about this
+  // drift risk. Two places stating a name is two places to get it wrong.
+  it("names the hotel restaurant exactly as content/hotel.ts does", () => {
+    const restaurant = getTenants().find((t) => t.slug === "harvest-kitchen-spirits")
+    expect(restaurant?.name).toBe(getHotel().restaurant.name)
   })
 })

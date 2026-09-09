@@ -14,23 +14,38 @@ export default function ContactForm() {
     const form = event.currentTarget
     const data = Object.fromEntries(new FormData(form))
 
-    const response = await fetch("/api/contact", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    })
-    const result = await response.json().catch(() => ({ ok: false, errors: {} }))
+    // Reset first: `sent` otherwise stays true forever after one successful
+    // submission, so a second submission that fails would show the
+    // "your message has been sent" banner and the error summary at the
+    // same time — a false success sitting right beside the real failure.
+    setSent(false)
 
-    if (result.ok) {
-      setErrors({})
-      setSent(true)
-      form.reset()
-      return
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      })
+      const result = await response.json().catch(() => ({ ok: false, errors: {} }))
+
+      if (result.ok) {
+        setErrors({})
+        setSent(true)
+        form.reset()
+        return
+      }
+
+      setErrors(result.errors ?? { form: "Something went wrong. Please try again." })
+      // Move focus to the summary so a screen reader user is told immediately.
+      requestAnimationFrame(() => summaryRef.current?.focus())
+    } catch {
+      // fetch() rejects on a network failure (offline, server down,
+      // navigation aborted) rather than resolving with an error body — an
+      // unguarded await here means the message silently vanishes with no
+      // error shown and no focus moved.
+      setErrors({ form: "Could not reach the server. Please check your connection and try again, or call." })
+      requestAnimationFrame(() => summaryRef.current?.focus())
     }
-
-    setErrors(result.errors ?? { form: "Something went wrong. Please try again." })
-    // Move focus to the summary so a screen reader user is told immediately.
-    requestAnimationFrame(() => summaryRef.current?.focus())
   }
 
   const describedBy = (field: string) => (errors[field] ? `${field}-error` : undefined)

@@ -171,16 +171,20 @@ p { text-wrap: pretty; max-width: var(--measure); }
 .band[data-bleed="true"] .band__inner { max-width: none; padding-inline: 0; }
 .band__eyebrow { color: var(--color-brick); margin: 0 0 0.75rem; }
 .band[data-tone="ink"] .band__eyebrow { color: var(--color-limestone); }
-/* Brick-on-limestone is not a validated pair in brand/tokens.json (only
-   ink-on-limestone and on.brick-on-brick are) — it fails WCAG AA contrast.
-   Repoint eyebrow-styled text to ink, the validated pair, whenever it sits
-   on a limestone-toned band. */
+/* Neither brick-on-limestone nor river-on-limestone is a validated pair in
+   brand/tokens.json (only ink-on-limestone and on.brick-on-brick are).
+   Brick-on-limestone fails WCAG AA contrast outright; river-on-limestone
+   computes to ~4.53:1 — technically over the 4.5 threshold but close enough,
+   and on an unvalidated pair, that it is not worth trusting, and the token
+   test does not guard it. Repoint eyebrow-styled text — and the "open"
+   tenant-status colour, which is river — to ink, the validated pair,
+   whenever either sits on a limestone-toned band. */
 .band[data-tone="limestone"] .band__eyebrow,
 .band[data-tone="limestone"] .thennow__label,
 .band[data-tone="limestone"] .filters__legend,
 .band[data-tone="limestone"] .amenity__cat,
 .band[data-tone="limestone"] .newsitem__meta,
-.band[data-tone="limestone"] .tenant__status[data-status="coming-soon"] { color: var(--color-ink); }
+.band[data-tone="limestone"] .tenant__status[data-status="open"] { color: var(--color-ink); }
 .band h1 { margin-bottom: 1.5rem; }
 .band h2 { margin-bottom: 1.5rem; }
 
@@ -437,7 +441,13 @@ p { text-wrap: pretty; max-width: var(--measure); }
 .tenant { display: grid; gap: 0.25rem; border-top: 2px solid var(--color-ink); padding-top: 0.9rem; }
 .tenant__status { margin: 0; }
 .tenant__status[data-status="open"] { color: var(--color-river); }
-.tenant__status[data-status="coming-soon"] { color: var(--color-brick); }
-.tenant__status[data-status="announced"] { color: var(--color-ink); opacity: 0.7; }
+/* [data-status="coming-soon"] and [data-status="announced"] rules were
+   removed here: after content/tenants.ts lost The Mailroom and Shelby's
+   Trio (they were not tenants — see the comment there), no tenant carries
+   either status, so styling for them was dead CSS. tenantSchema still
+   allows both values for a real future tenant; if one is added, restyle it
+   here and re-check it against brand/tokens.json's validated pairs on
+   every band tone before publishing — the "open" rule above already needed
+   that check once (see the limestone-band override near .band__eyebrow). */
 .tenant__name { font-family: var(--font-display); font-size: var(--step-1); }
 .tenant__cat { font-size: var(--step--1); opacity: 0.8; }

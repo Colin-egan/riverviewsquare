@@ -25,8 +25,11 @@ export default function Leasing() {
         <p>
           Ground-floor space at {address.street}, opening onto downtown {address.city} — with a{" "}
           {hotelRooms}-room hotel above it, a {parkingSpaces.toLocaleString()}-space garage beside
-          it, and a {arena.seats.toLocaleString()}-seat arena across the road. Rooftop and outdoor
-          patio opportunities available.
+          it, and a {arena.seats.toLocaleString()}-seat arena across the road.{" "}
+          {/* Client's own retail page, FEATURES: "Rooftop activation opportunities"
+              and "Outdoor patio seating along central square" — paraphrased into one
+              sentence, not invented. */}
+          Rooftop and outdoor patio opportunities available.
         </p>
         <div style={{ marginTop: "2.5rem" }}>
           <StatRow
@@ -81,7 +84,7 @@ export default function Leasing() {
          * paragraph with the mailto link and remove this comment.
          */}
         <p>
-          Call <a href={`tel:${leasing.phone.replace(/\./g, "")}`}>{leasing.phone}</a>, or send an
+          Call <a href={`tel:+1${leasing.phone.replace(/\./g, "")}`}>{leasing.phone}</a>, or send an
           enquiry using the form below and it will reach our leasing team directly.
         </p>
         <div style={{ marginTop: "2rem" }}>

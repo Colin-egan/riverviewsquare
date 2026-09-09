@@ -7,6 +7,7 @@ type Errors = Record<string, string>
 export default function LeasingForm() {
   const [errors, setErrors] = useState<Errors>({})
   const [sent, setSent] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
   const summaryRef = useRef<HTMLDivElement>(null)
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -14,22 +15,41 @@ export default function LeasingForm() {
     const form = event.currentTarget
     const data = Object.fromEntries(new FormData(form))
 
-    const response = await fetch("/api/contact", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...data, kind: "leasing" }),
-    })
-    const result = await response.json().catch(() => ({ ok: false, errors: {} }))
+    // Reset first: `sent` otherwise stays true forever after one successful
+    // submission, so a second submission that fails would show the
+    // "your enquiry has been sent" banner and the error summary at the same
+    // time — a false success sitting right beside the real failure.
+    setSent(false)
+    setSubmitting(true)
 
-    if (result.ok) {
-      setErrors({})
-      setSent(true)
-      form.reset()
-      return
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...data, kind: "leasing" }),
+      })
+      const result = await response.json().catch(() => ({ ok: false, errors: {} }))
+
+      if (result.ok) {
+        setErrors({})
+        setSent(true)
+        form.reset()
+        return
+      }
+
+      setErrors(result.errors ?? { form: "Something went wrong. Please try again." })
+      requestAnimationFrame(() => summaryRef.current?.focus())
+    } catch {
+      // fetch() rejects on a network failure (offline, server down,
+      // navigation aborted) rather than resolving with an error body — an
+      // unguarded await here means the enquiry silently vanishes with no
+      // error shown and no focus moved. Same class of failure as the
+      // bounced leasing address the form exists to fix.
+      setErrors({ form: "Could not reach the server. Please check your connection and try again, or call." })
+      requestAnimationFrame(() => summaryRef.current?.focus())
+    } finally {
+      setSubmitting(false)
     }
-
-    setErrors(result.errors ?? { form: "Something went wrong. Please try again." })
-    requestAnimationFrame(() => summaryRef.current?.focus())
   }
 
   const describedBy = (field: string) => (errors[field] ? `${field}-error` : undefined)
@@ -98,7 +118,9 @@ export default function LeasingForm() {
         <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
       </div>
 
-      <button type="submit" className="button button--primary">Send enquiry</button>
+      <button type="submit" className="button button--primary" disabled={submitting}>
+        {submitting ? "Sending…" : "Send enquiry"}
+      </button>
     </form>
   )
 }
