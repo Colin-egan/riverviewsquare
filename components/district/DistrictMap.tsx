@@ -112,8 +112,10 @@ export default function DistrictMap({ amenities, activeCategories, selectedSlug,
       if (markersRef.current.has(amenity.slug)) continue
 
       // AMENITY_CATEGORIES is the single source of truth for category colour
-      // (Task 10's filter chips read the same colorVar) — the pin looks it up
-      // rather than duplicating a category -> colour map in CSS. .find can
+      // — the pin looks it up rather than duplicating a category -> colour map
+      // in CSS. (The filter chips do not read colorVar: they are drawn in ink
+      // whether pressed or not, so category colour appears only on the map.)
+      // .find can
       // return undefined for an arbitrary string, but amenity.category is the
       // closed AmenityCategory union and AMENITY_CATEGORIES covers every
       // member, so a miss here means the two have drifted apart; fail loudly
@@ -126,7 +128,6 @@ export default function DistrictMap({ amenities, activeCategories, selectedSlug,
       const el = document.createElement("button")
       el.type = "button"
       el.className = "pin"
-      el.dataset.category = amenity.category
       el.dataset.anchor = String(amenity.isAnchor)
       // A marker recreated here (e.g. after a filter round-trip removed and
       // re-added it) must be born with the current selection state — the

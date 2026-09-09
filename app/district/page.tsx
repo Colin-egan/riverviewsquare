@@ -22,10 +22,10 @@ export default function District() {
         heading={`What is around us in downtown ${address.city}`}
       >
         <p>
-          Historic Franklin Street starts a block east. The Cumberland is a block west. Between
+          Historic Franklin Street runs east from the site. The Cumberland runs west. Between
           them: two breweries, a meadery, the Roxy Regional Theatre, a museum in the 1898 customs
-          house, and a {arena.seats.toLocaleString()}-seat arena across the road. Filter the list
-          to see it on the map.
+          house, and a {arena.seats.toLocaleString()}-seat arena. Filter the list to see it on
+          the map.
         </p>
       </Section>
 

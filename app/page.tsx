@@ -53,7 +53,7 @@ export default function Home() {
         </div>
       </Section>
 
-      <Section tone="ink" eyebrow="The neighborhood" heading="You are two blocks from everything">
+      <Section tone="ink" eyebrow="The neighborhood" heading="What is already around you">
         <p>
           Historic Franklin Street runs east from the site: two breweries, a meadery, the Roxy
           Regional Theatre and the Customs House Museum. Austin Peay State University sits at the

@@ -297,7 +297,11 @@ p { text-wrap: pretty; max-width: var(--measure); }
 }
 
 .explorer { max-width: 84rem; margin-inline: auto; padding-inline: clamp(1rem, 4vw, 3rem); }
-.filters__legend { margin: 0 0 0.75rem; color: var(--color-brick); }
+/* .band h2 (0,1,1) outranks a bare .filters__legend, so the margin is set
+   at matching specificity — the legend is an h2 for heading order, not for
+   the section-heading spacing that rule carries. */
+.band .filters__legend { margin: 0 0 0.75rem; }
+.filters__legend { color: var(--color-brick); }
 .filters__row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 .filters__count { font-size: var(--step--1); margin: 0.9rem 0 0; opacity: 0.8; }
 
@@ -337,7 +341,7 @@ p { text-wrap: pretty; max-width: var(--measure); }
      block must come after the unconditional .explorer__list rule above:
      equal-specificity rules cascade by source order regardless of the media
      query, so placed earlier this override would lose to the 40rem rule. */
-  .explorer__list { max-height: none; }
+  .explorer__list { max-height: none; overflow-y: visible; }
 }
 
 .amenities { list-style: none; margin: 0; padding: 0; }
