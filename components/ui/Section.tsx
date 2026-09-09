@@ -1,7 +1,7 @@
 import RiverRule from "@/components/ui/RiverRule"
 
 type Props = {
-  eyebrow?: string
+  eyebrow?: React.ReactNode
   heading?: string
   /**
    * A page needs exactly one h1. Section renders h2 by default since most

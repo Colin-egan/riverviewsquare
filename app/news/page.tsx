@@ -2,19 +2,12 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import Section from "@/components/ui/Section"
 import { getNews } from "@/lib/data/news"
+import { formatDate } from "@/lib/format-date"
 
 export const metadata: Metadata = {
   title: "News",
   description: "Press coverage and announcements about Riverview Square in downtown Clarksville.",
 }
-
-const formatDate = (iso: string) =>
-  new Date(`${iso}T12:00:00Z`).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    timeZone: "UTC",
-  })
 
 export default function News() {
   const news = getNews()

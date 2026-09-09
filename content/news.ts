@@ -11,17 +11,24 @@
 import { z } from "zod"
 import { slugSchema, urlSchema } from "@/lib/schemas"
 
-export const newsSchema = z.object({
-  slug: slugSchema,
-  title: z.string().min(1),
-  /** ISO date. The old site published US-format dates; these are converted. */
-  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  source: z.string().min(1),
-  /** Publisher URL. null for items with no outbound link on record. */
-  externalUrl: urlSchema.nullable(),
-  /** Transcribed article text for self-hosted items. null for outbound links. */
-  body: z.string().nullable(),
-})
+export const newsSchema = z
+  .object({
+    slug: slugSchema,
+    title: z.string().min(1),
+    /** ISO date. The old site published US-format dates; these are converted. */
+    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    source: z.string().min(1),
+    /** Publisher URL. null for items with no outbound link on record. */
+    externalUrl: urlSchema.nullable(),
+    /** Transcribed article text for self-hosted items. null for outbound links. */
+    body: z.string().nullable(),
+  })
+  .refine((item) => item.externalUrl === null || item.body === null, {
+    // /news links out when externalUrl is set (externalUrl wins over body),
+    // so an item with both would publish a sitemap entry and static route
+    // that the index never links to, orphaning the detail page.
+    message: "An item cannot have both externalUrl and body set — the index would link out and orphan the detail route.",
+  })
 
 export type NewsItem = z.infer<typeof newsSchema>
 
@@ -170,7 +177,15 @@ export const news: NewsItem[] = z.array(newsSchema).parse([
   {
     slug: "50-million-development-announced",
     title: "$50 million development announced between Riverview Inn and downtown arena in Clarksville",
-    date: "2021-04-22",
+    // The client's own Squarespace index listed this item as 4/22/21, but
+    // that was their repost date, not the publisher's date. The URL path
+    // below (theleafchronicle.com/.../2019/11/13/...) carries the USA Today
+    // network's real publish date, and the article's own recovered text says
+    // it was announced "the morning after the County Commission approved the
+    // MPEC funding" — Montgomery County approved that funding in November
+    // 2019, not April 2021. Every other item's index date agrees with its
+    // publisher's date; this was the one exception.
+    date: "2019-11-13",
     source: "The Leaf-Chronicle",
     externalUrl: "https://www.theleafchronicle.com/story/news/local/clarksville/2019/11/13/riverview-inn-remodel-50-million-development-announced-near-arena/4177127002/",
     // Deliberately null. The old site carries ~2,300 characters of body text
