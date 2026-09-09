@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
@@ -13,8 +14,22 @@ export default function Navigation() {
 
   return (
     <nav aria-label="Main" className="nav">
+      {/*
+        The reversed wordmark, not the project name as text. It is the
+        client's actual mark (pulled from their live site), so the alt text
+        is the name it spells — a logo's alt is what it says, not a
+        description of it. Not in the media registry: that registry is for
+        editorial imagery a page reasons about, and the mark is chrome.
+        `priority` because it sits at the top of every page.
+      */}
       <Link href="/" className="nav__brand">
-        {name}
+        <Image
+          src="/brand/riverview-square-wordmark-white.png"
+          alt={name}
+          width={1600}
+          height={371}
+          priority
+        />
       </Link>
 
       <button

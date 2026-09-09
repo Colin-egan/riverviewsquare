@@ -3,8 +3,9 @@
 
 /*
  * Accessibility baseline, plus the visual identity generated from
- * brand/tokens.json (see tokens.css) and the type scale below. The palette
- * is provisional — see TOKENS-PENDING.md.
+ * brand/tokens.json (see tokens.css) and the type scale below. `river` and
+ * `signal` are sampled from the client wordmark; the neutrals around them
+ * are still chosen rather than supplied — see TOKENS-PENDING.md.
  */
 
 /* The skip link is offscreen until focused, then visible and on top. */
@@ -64,28 +65,51 @@ body {
   margin: 0;
 }
 
+/*
+ * Headings echo the wordmark rather than contrasting with it: the client
+ * mark (public/brand/riverview-square-wordmark.png) is wide geometric caps,
+ * so display type widens on Archivo's `wdth` axis and tightens its tracking
+ * as it scales up. Browsers without the variable axis get normal width —
+ * the hierarchy survives, only the flavour is lost.
+ */
 h1, h2, h3 {
   font-family: var(--font-display);
-  line-height: 1.1;
+  /* Semibold, not regular. The wordmark is a heavy wide sans; headings set
+     at Archivo's default 400 read as body copy scaled up and left the mark
+     looking like it belonged to a different site. */
+  font-weight: 600;
+  font-stretch: 110%;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
   text-wrap: balance;
   margin: 0;
 }
 
-h1 { font-size: var(--step-5); }
+h1 { font-size: var(--step-5); font-weight: 700; letter-spacing: -0.03em; }
 h2 { font-size: var(--step-3); }
-h3 { font-size: var(--step-1); }
+h3 { font-size: var(--step-1); letter-spacing: -0.005em; }
 
 p { text-wrap: pretty; max-width: var(--measure); }
 
-/* Small-caps eyebrow label, per the Optimist Hall reference. */
+/*
+ * Small-caps eyebrow label, per the Optimist Hall reference. Display face,
+ * not body: eyebrows are UI chrome and belong with the nav and buttons in
+ * Archivo. Setting them in the serif made them read as pull-quotes.
+ */
 .eyebrow {
-  font-family: var(--font-body);
+  font-family: var(--font-display);
   font-size: var(--step--1);
-  letter-spacing: 0.12em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   font-weight: 600;
 }
 
+/*
+ * The nav carries the brand green edge to edge, with the reversed wordmark
+ * on it. Bookended by the footer on the same ground, this is what makes a
+ * page read as this client's rather than as a default light template — the
+ * mark is the one place the palette is not an interpretation.
+ */
 .nav {
   display: flex;
   align-items: center;
@@ -93,13 +117,19 @@ p { text-wrap: pretty; max-width: var(--measure); }
   gap: 1.5rem;
   flex-wrap: wrap;
   padding: 1rem clamp(1rem, 4vw, 3rem);
-  border-bottom: 1px solid color-mix(in srgb, var(--color-ink) 12%, transparent);
+  background: var(--color-river);
+  color: var(--color-on-river);
 }
 .nav__brand {
-  font-family: var(--font-display);
-  font-size: var(--step-1);
+  display: block;
+  line-height: 0;
   text-decoration: none;
-  color: var(--color-ink);
+  color: var(--color-on-river);
+}
+.nav__brand img {
+  display: block;
+  width: auto;
+  height: clamp(1.6rem, 1.2rem + 1.4vw, 2.25rem);
 }
 .nav__list {
   display: flex;
@@ -109,45 +139,56 @@ p { text-wrap: pretty; max-width: var(--measure); }
   padding: 0;
 }
 .nav__list a {
+  font-family: var(--font-display);
   font-size: var(--step--1);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--color-ink);
+  font-weight: 500;
+  color: var(--color-on-river);
   text-decoration: none;
   padding-block: 0.5rem;
   border-bottom: 2px solid transparent;
 }
-.nav__list a:hover { border-bottom-color: var(--color-river); }
-.nav__list a[aria-current="page"] { border-bottom-color: var(--color-brick); }
+/* Turquoise is the mark's second colour and reads clearly on the green
+   (6.6:1). It is never used for text on paper — see the note on .button. */
+.nav__list a:hover { border-bottom-color: var(--color-signal); }
+.nav__list a[aria-current="page"] { border-bottom-color: var(--color-signal); color: var(--color-signal); }
 .nav__toggle { display: none; }
+
+/* CanvasText is near-black, which is a weak outline on the green nav. Scope a
+   brighter one to the bar; the global CanvasText rule still governs
+   everywhere else and in forced-colors mode. */
+.nav :focus-visible { outline-color: var(--color-signal); }
 
 @media (max-width: 48rem) {
   .nav__toggle {
     display: block;
-    font: inherit;
+    font-family: var(--font-display);
     font-size: var(--step--1);
-    letter-spacing: 0.08em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     background: none;
-    border: 1px solid var(--color-ink);
-    color: var(--color-ink);
+    border: 1px solid var(--color-on-river);
+    color: var(--color-on-river);
     padding: 0.5rem 0.9rem;
     cursor: pointer;
   }
   .nav__list { display: none; flex-basis: 100%; flex-direction: column; gap: 0; }
   .nav__list[data-open="true"] { display: flex; }
-  .nav__list li { border-top: 1px solid color-mix(in srgb, var(--color-ink) 12%, transparent); }
+  .nav__list li { border-top: 1px solid color-mix(in srgb, var(--color-on-river) 25%, transparent); }
   .nav__list a { display: block; padding: 0.9rem 0; }
 }
 
 .footer {
   margin-top: var(--band);
-  background: var(--color-limestone);
-  /* Paired foreground. Inheriting --color-ink happens to match today, but the
-     palette is provisional (TOKENS-PENDING.md) — pairing it explicitly keeps
-     footer contrast correct when the real brand colours land. */
-  color: var(--color-on-limestone);
+  background: var(--color-river);
+  /* Paired foreground, never inherited: on.river is the validated partner for
+     this ground in brand/tokens.json, and the token test guards the pair. */
+  color: var(--color-on-river);
 }
+.footer :focus-visible { outline-color: var(--color-signal); }
+.footer__mark { width: auto; height: 1.75rem; margin-bottom: 1.25rem; }
+.footer a { color: inherit; }
 .footer__grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
@@ -161,30 +202,44 @@ p { text-wrap: pretty; max-width: var(--measure); }
 .footer__links li { margin-bottom: 0.35rem; }
 
 .band { padding-block: var(--band); }
+/*
+ * A divider renders as the band's first child, inside the top padding, so
+ * the content that follows it starts immediately underneath. Without this
+ * the river bend ran straight into the first thing in the band — on
+ * /partners it crossed the top rule of the partner cards. Give the rule its
+ * own clearance rather than adding margin to every element that might
+ * happen to come first.
+ */
+.band > svg + .band__inner { margin-top: clamp(2rem, 1rem + 3vw, 3.5rem); }
 .band[data-tone="ink"] { background: var(--color-ink); color: var(--color-paper); }
 .band[data-tone="limestone"] { background: var(--color-limestone); }
+/* The brand ground. Used for the one band per page that should feel like the
+   mark rather than the page — currently the district call-to-action on the
+   home page and the leasing pitch. */
+.band[data-tone="river"] { background: var(--color-river); color: var(--color-on-river); }
+.band[data-tone="river"] :focus-visible { outline-color: var(--color-signal); }
 .band__inner {
   max-width: 78rem;
   margin-inline: auto;
   padding-inline: clamp(1rem, 4vw, 3rem);
 }
 .band[data-bleed="true"] .band__inner { max-width: none; padding-inline: 0; }
-.band__eyebrow { color: var(--color-brick); margin: 0 0 0.75rem; }
-.band[data-tone="ink"] .band__eyebrow { color: var(--color-limestone); }
-/* Neither brick-on-limestone nor river-on-limestone is a validated pair in
-   brand/tokens.json (only ink-on-limestone and on.brick-on-brick are).
-   Brick-on-limestone fails WCAG AA contrast outright; river-on-limestone
-   computes to ~4.53:1 — technically over the 4.5 threshold but close enough,
-   and on an unvalidated pair, that it is not worth trusting, and the token
-   test does not guard it. Repoint eyebrow-styled text — and the "open"
-   tenant-status colour, which is river — to ink, the validated pair,
-   whenever either sits on a limestone-toned band. */
-.band[data-tone="limestone"] .band__eyebrow,
-.band[data-tone="limestone"] .thennow__label,
-.band[data-tone="limestone"] .filters__legend,
-.band[data-tone="limestone"] .amenity__cat,
-.band[data-tone="limestone"] .newsitem__meta,
-.band[data-tone="limestone"] .tenant__status[data-status="open"] { color: var(--color-ink); }
+/*
+ * Accent text is `river`, the mark's primary. This replaces `brick`, which
+ * was the accent while the palette was invented: brick-on-limestone measures
+ * 4.37:1 and fails AA outright, which is why this block used to force such
+ * text to ink on limestone bands. River clears every ground the site uses —
+ * 10.8:1 on paper, 8.3:1 on limestone — so the workaround is gone rather
+ * than retuned, and brand/tokens.json now validates river-on-paper and
+ * limestone-on-river directly. Brick survives in exactly two places, both
+ * non-decorative: the map's building fill, and form error states, where a
+ * warm red-brown is the one colour that must not be confusable with the
+ * green-and-turquoise brand. Both sit on paper (5.7:1) — do not move an
+ * error onto a limestone band without rechecking it.
+ */
+.band__eyebrow { color: var(--color-river); margin: 0 0 0.75rem; }
+.band[data-tone="ink"] .band__eyebrow { color: var(--color-signal); }
+.band[data-tone="river"] .band__eyebrow { color: var(--color-signal); }
 .band h1 { margin-bottom: 1.5rem; }
 .band h2 { margin-bottom: 1.5rem; }
 
@@ -194,9 +249,17 @@ p { text-wrap: pretty; max-width: var(--measure); }
   gap: 2rem;
   margin: 0;
 }
-.stats__item { border-top: 2px solid var(--color-brick); padding-top: 1rem; }
+.stats__item { border-top: 2px solid var(--color-river); padding-top: 1rem; }
 .stats__label { margin: 0 0 0.4rem; }
-.stats__value { font-family: var(--font-display); font-size: var(--step-4); margin: 0; line-height: 1; }
+.stats__value {
+  font-family: var(--font-display);
+  font-size: var(--step-4);
+  font-weight: 600;
+  font-stretch: 110%;
+  letter-spacing: -0.02em;
+  margin: 0;
+  line-height: 1;
+}
 
 .hero { position: relative; isolation: isolate; }
 .hero__media { display: block; }
@@ -219,32 +282,171 @@ p { text-wrap: pretty; max-width: var(--measure); }
   mask-size: 100% 100%;
 }
 .hero__media figcaption { display: none; }
+
+/*
+ * The Optimist Hall move — type on the imagery, not beside it — without
+ * putting text on a busy rendering. The copy rides a solid `river` panel
+ * that overlaps the masked lower edge of the image, so every character is
+ * on the validated on.river pair (10.8:1) no matter what the photograph
+ * underneath is doing. The panel is also where the river-bend mask becomes
+ * legible as a shape: the image's curved bottom edge reads against the flat
+ * top of the panel.
+ *
+ * Below 52rem the panel stops overlapping and simply follows the image —
+ * an overlap at phone width would eat the picture.
+ */
 .hero__copy {
   max-width: 78rem;
   margin-inline: auto;
-  padding: 2.5rem clamp(1rem, 4vw, 3rem) 0;
+  padding-inline: clamp(1rem, 4vw, 3rem);
 }
-.hero__tagline { font-size: var(--step-2); max-width: 34ch; margin: 1rem 0 0; }
+.hero__panel {
+  background: var(--color-river);
+  color: var(--color-on-river);
+  padding: clamp(1.75rem, 1rem + 3vw, 3rem);
+  max-width: 46rem;
+}
+.hero__panel :focus-visible { outline-color: var(--color-signal); }
+.hero__panel .eyebrow { color: var(--color-signal); margin: 0 0 0.75rem; }
+.hero__panel h1 { margin: 0; }
+.hero__tagline {
+  font-size: var(--step-2);
+  max-width: 34ch;
+  margin: 1rem 0 0;
+  color: var(--color-limestone);
+}
 .hero__actions { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2rem; max-width: none; }
+
+@media (min-width: 52rem) {
+  .hero__copy { margin-top: clamp(-9rem, -7vw, -4rem); position: relative; z-index: 1; }
+}
+/* The hero caption, unlike the rest of Figure's, has to survive on top of the
+   panel: these renderings carry invented storefront names and the page must
+   say so. Quiet, but never hidden. */
+.hero__note {
+  margin: 1rem 0 0;
+  font-size: var(--step--1);
+  color: var(--color-limestone);
+  max-width: 46ch;
+}
 
 .button {
   display: inline-block;
+  font-family: var(--font-display);
   font-size: var(--step--1);
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   font-weight: 600;
   text-decoration: none;
   padding: 0.95rem 1.6rem;
   border: 2px solid transparent;
+  transition: background-color 140ms ease, color 140ms ease;
 }
+/*
+ * Turquoise is a LIGHT colour — 1.6:1 against paper. It can only ever be a
+ * background with ink on it (9.4:1, the validated on.signal pair), never
+ * text on the page ground. That constraint is why the primary button is a
+ * turquoise block rather than a turquoise-on-white link, and it is the rule
+ * to check first if this colour is reached for anywhere new.
+ */
 .button--primary { background: var(--color-signal); color: var(--color-on-signal); }
-.button--primary:hover { background: var(--color-river); color: var(--color-on-river); }
+.button--primary:hover { background: var(--color-paper); color: var(--color-ink); }
 .button--ghost { border-color: currentColor; color: inherit; }
 .button--ghost:hover { background: var(--color-ink); color: var(--color-paper); }
-.band[data-tone="ink"] .button--ghost:hover { background: var(--color-paper); color: var(--color-ink); }
+.band[data-tone="ink"] .button--ghost:hover,
+.band[data-tone="river"] .button--ghost:hover,
+.hero__panel .button--ghost:hover { background: var(--color-paper); color: var(--color-ink); }
+
+/*
+ * Caption typography. Set as prose, not as a label — see the note in
+ * Figure.tsx. `--measure` keeps a long honesty caption from running the
+ * full width of a full-bleed image.
+ */
+.figure__caption {
+  font-family: var(--font-body);
+  font-size: var(--step--1);
+  line-height: 1.5;
+  color: color-mix(in srgb, currentColor 78%, transparent);
+  max-width: var(--measure);
+  margin-top: 0.75rem;
+}
+.figure__credit {
+  font-family: var(--font-display);
+  font-size: 0.75em;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+/*
+ * A full-bleed band drops its inner padding so the image can touch both
+ * edges — which left the caption jammed against the viewport edge. Give the
+ * caption back the grid gutter the image gave up. Scoped to [data-bleed] so
+ * captions inside a normal band are not double-padded.
+ */
+.band[data-bleed="true"] .figure__caption {
+  padding-inline: clamp(1rem, 4vw, 3rem);
+  max-width: min(var(--measure), 100%);
+  box-sizing: content-box;
+}
+
+/*
+ * Figures in a side-by-side grid stretch to the tallest row, and a credit
+ * line has to stay inside that box rather than spilling over whatever
+ * follows. Laying the <figure> out as a column — image takes the free
+ * space, caption sits under it — is what keeps the credit attached to its
+ * own picture. Without this the "Clarksville Aerial Photography" credit
+ * landed on top of the next button.
+ */
+.mediapair figure,
+.thennow figure {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.mediapair figcaption,
+.thennow figcaption {
+  margin-top: auto;
+  padding-top: 0.75rem;
+}
+
+/*
+ * Leasing plan drawings. Full width, stacked, and on a white card rather
+ * than straight onto the paper ground: the drawings have white backgrounds,
+ * so without the card and its hairline they bleed into the page and lose
+ * their edges. The frame is what makes them read as documents.
+ */
+.planstack { display: grid; gap: 2.5rem; margin-top: 2.5rem; }
+.planstack img {
+  width: 100%;
+  height: auto;
+  display: block;
+  /* The drawings are white-backed, so on the paper ground their edges
+     disappear. A hairline gives them one — cheaper than introducing a white
+     token that exists only for this, and it keeps every colour on the page
+     inside brand/tokens.json. */
+  border: 1px solid var(--color-limestone);
+}
+.planstack .figure__caption { margin-top: 1rem; }
+
+/* Two figures of equal weight, side by side. Same grid as .thennow but
+   without the era labels — used where the pair is just two views of the
+   same subject rather than a then-and-now claim. */
+.mediapair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+  margin-bottom: 2.5rem;
+}
+.mediapair img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  aspect-ratio: 3 / 2;
+}
 
 .thennow { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: 2rem; }
-.thennow__label { color: var(--color-brick); margin: 0 0 0.75rem; }
+.thennow__label { color: var(--color-river); margin: 0 0 0.75rem; }
 /* Covers both cases Figure can render: a real <img> once photography exists,
    and — today, with the media registry empty — the .figure__placeholder
    <div>. Two class selectors beats .figure__placeholder's one, so the 4/3
@@ -307,7 +509,7 @@ p { text-wrap: pretty; max-width: var(--measure); }
    at matching specificity — the legend is an h2 for heading order, not for
    the section-heading spacing that rule carries. */
 .band .filters__legend { margin: 0 0 0.75rem; }
-.filters__legend { color: var(--color-brick); }
+.filters__legend { color: var(--color-river); }
 .filters__row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 .filters__count { font-size: var(--step--1); margin: 0.9rem 0 0; opacity: 0.8; }
 
@@ -369,7 +571,7 @@ p { text-wrap: pretty; max-width: var(--measure); }
   background: color-mix(in srgb, var(--color-river) 12%, transparent);
   border-left-color: var(--color-river);
 }
-.amenity__cat { color: var(--color-brick); margin: 0; }
+.amenity__cat { color: var(--color-river); margin: 0; }
 .amenity__name { font-family: var(--font-display); font-size: var(--step-1); }
 .amenity__addr, .amenity__blurb { font-size: var(--step--1); opacity: 0.85; }
 
@@ -386,9 +588,10 @@ p { text-wrap: pretty; max-width: var(--measure); }
   top: 1.35rem;
   width: 0.6rem;
   height: 0.6rem;
-  background: var(--color-brick);
+  background: var(--color-river);
 }
-.band[data-tone="ink"] .ticklist li::before { background: var(--color-signal); }
+.band[data-tone="ink"] .ticklist li::before,
+.band[data-tone="river"] .ticklist li::before { background: var(--color-signal); }
 
 .partners {
   list-style: none;
@@ -398,14 +601,26 @@ p { text-wrap: pretty; max-width: var(--measure); }
   grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
   gap: 2rem;
 }
-.partner { border-top: 2px solid var(--color-brick); padding-top: 1rem; }
+.partner { border-top: 2px solid var(--color-river); padding-top: 1rem; }
+/* Marks arrive at wildly different aspect ratios (BNA is near-square, Oliver
+   Hospitality is a wide lockup). Cap the height and let width follow, so a
+   wide mark does not tower over a square one. */
+.partner__logo {
+  display: block;
+  width: auto;
+  height: 2.5rem;
+  max-width: 100%;
+  object-fit: contain;
+  object-position: left center;
+  margin: 0.75rem 0 1rem;
+}
 .partner__role { margin: 0 0 0.5rem; }
 .partner__name { font-size: var(--step-2); margin: 0; }
 .partner__name a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
 
 .newslist { list-style: none; margin: 0; padding: 0; max-width: 52rem; }
 .newsitem { padding: 1.5rem 0; border-bottom: 1px solid color-mix(in srgb, var(--color-ink) 15%, transparent); }
-.newsitem__meta { margin: 0 0 0.5rem; color: var(--color-brick); }
+.newsitem__meta { margin: 0 0 0.5rem; color: var(--color-river); }
 .newsitem__title { font-size: var(--step-1); margin: 0; }
 .newsitem__title a { color: inherit; text-underline-offset: 0.2em; }
 
@@ -435,6 +650,21 @@ p { text-wrap: pretty; max-width: var(--measure); }
 .form__field p { color: var(--color-brick); font-size: var(--step--1); margin: 0; }
 .form__summary { border: 2px solid var(--color-brick); padding: 1rem 1.25rem; }
 .form__summary h3 { margin: 0 0 0.5rem; font-size: var(--step-1); }
+/*
+ * Success needs as much visual weight as failure. This was previously an
+ * unstyled <p>, indistinguishable from body copy — after sending a form the
+ * only confirmation was a line of text that looked like the paragraph above
+ * it. The left rule and the brand ground make it read as a state change.
+ * Colour is not the only signal: the wording carries it too, for anyone who
+ * cannot see the rule.
+ */
+.form__sent {
+  border-left: 4px solid var(--color-river);
+  background: color-mix(in srgb, var(--color-river) 8%, transparent);
+  padding: 1rem 1.25rem;
+  margin: 0;
+  max-width: none;
+}
 .form button { justify-self: start; cursor: pointer; border: 0; font: inherit; }
 
 .tenants { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1.5rem; }

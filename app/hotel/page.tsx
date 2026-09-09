@@ -38,6 +38,10 @@ export default function HotelPage() {
 
       <Section tone="limestone" eyebrow="Eat and drink" heading={hotel.restaurant.name} divider>
         <p>{hotel.restaurant.description}</p>
+        <div className="mediapair">
+          <Figure id="harvest-bar" sizes="(max-width: 48rem) 100vw, 50vw" />
+          <Figure id="harvest-lounge" sizes="(max-width: 48rem) 100vw, 50vw" />
+        </div>
       </Section>
 
       <Section eyebrow="Meet" heading={`Space for up to ${hotel.meeting.capacity}`} divider>
@@ -57,12 +61,22 @@ export default function HotelPage() {
         </div>
       </Section>
 
-      <Section tone="ink" eyebrow="On site" heading="Amenities">
+      <Section tone="river" eyebrow="On site" heading="Amenities">
         <ul className="ticklist">
           {hotel.amenities.map((a) => (
             <li key={a}>{a}</li>
           ))}
         </ul>
+      </Section>
+
+      {/* The cookie is the one thing every DoubleTree guest already knows the
+          brand for, and the fitness centre is the amenity the list above can
+          only name. Both are real photographs of this property. */}
+      <Section eyebrow="Details" heading="Small things, done" divider>
+        <div className="mediapair">
+          <Figure id="doubletree-fitness-center" sizes="(max-width: 48rem) 100vw, 50vw" />
+          <Figure id="doubletree-cookie" sizes="(max-width: 48rem) 100vw, 50vw" />
+        </div>
       </Section>
     </>
   )

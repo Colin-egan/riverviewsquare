@@ -1,5 +1,38 @@
-import { existsSync } from "node:fs"
+import { existsSync, readFileSync } from "node:fs"
 import { describe, expect, it } from "vitest"
+
+/**
+ * Pixel dimensions from a PNG or JPEG header. Hand-rolled rather than pulling
+ * an image library in as a dev dependency: the manifest only ever holds these
+ * two formats, and both put their dimensions a fixed distance into a
+ * well-documented header.
+ *
+ * PNG: an 8-byte signature, then the IHDR chunk, whose width and height are
+ * the two big-endian uint32s at byte 16.
+ *
+ * JPEG: a chain of marker segments. Walk them until one of the SOF markers
+ * (0xC0–0xCF, excluding 0xC4/0xC8/0xCC, which are Huffman/arithmetic tables
+ * rather than frame headers) gives height then width as big-endian uint16s
+ * five and seven bytes into the segment.
+ */
+function readImageSize(buf: Buffer): { width: number; height: number } {
+  if (buf.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) {
+    return { width: buf.readUInt32BE(16), height: buf.readUInt32BE(20) }
+  }
+  if (buf.readUInt16BE(0) === 0xffd8) {
+    let offset = 2
+    while (offset < buf.length) {
+      if (buf[offset] !== 0xff) throw new Error(`Malformed JPEG at byte ${offset}`)
+      const marker = buf[offset + 1]
+      if (marker >= 0xc0 && marker <= 0xcf && marker !== 0xc4 && marker !== 0xc8 && marker !== 0xcc) {
+        return { height: buf.readUInt16BE(offset + 5), width: buf.readUInt16BE(offset + 7) }
+      }
+      offset += 2 + buf.readUInt16BE(offset + 2)
+    }
+    throw new Error("No SOF marker found in JPEG")
+  }
+  throw new Error("Unrecognised image format — expected PNG or JPEG")
+}
 import { findDuplicateIds } from "@/content/media"
 import { ALL_MEDIA, ALL_PLANNED_MEDIA, getMedia, getPlannedMedia } from "@/lib/data/media"
 
@@ -29,6 +62,18 @@ describe("media manifest", () => {
   it.each(ALL_MEDIA)("$id declares real dimensions", ({ width, height }) => {
     expect(width).toBeGreaterThan(0)
     expect(height).toBeGreaterThan(0)
+  })
+
+  /**
+   * The declared width/height must match the file on disk. next/image uses
+   * these two numbers to reserve space before the image loads, so a stale
+   * pair does not fail loudly — it ships a layout shift on a photography-led
+   * page, which is the one defect this design cannot absorb. Cheap to check
+   * from the file header, so there is no reason to trust the manifest.
+   */
+  it.each(ALL_MEDIA)("$id's declared dimensions match the file", ({ src, width, height }) => {
+    const actual = readImageSize(readFileSync(`public${src}`))
+    expect(actual).toEqual({ width, height })
   })
 
   it("has unique ids", () => {

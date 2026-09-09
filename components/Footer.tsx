@@ -1,16 +1,30 @@
+import Image from "next/image"
 import Link from "next/link"
 import { getProject } from "@/lib/data/project"
 import { SITE_ROUTES } from "@/lib/routes"
-import RiverRule from "@/components/ui/RiverRule"
 
 export default function Footer() {
   const { name, address, email, leasing, social } = getProject()
 
   return (
     <footer className="footer">
-      <RiverRule />
+      {/* The RiverRule that used to sit here is gone: the footer is now on
+          the river ground itself, so a river-coloured divider drawn on top
+          of it was invisible. The bend still separates bands within a page
+          (Section's `divider`) and still masks the home hero. */}
       <div className="footer__grid">
         <div>
+          {/* alt="" deliberately: the address immediately below opens with
+              the project name, so giving the mark its own alt would make a
+              screen reader announce "Riverview Square" twice in a row. The
+              nav's copy of the mark is the one that carries the name. */}
+          <Image
+            src="/brand/riverview-square-wordmark-white.png"
+            alt=""
+            width={1600}
+            height={371}
+            className="footer__mark"
+          />
           <h2 className="eyebrow">Visit</h2>
           <address>
             <p>{name}</p>

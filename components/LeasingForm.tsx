@@ -67,7 +67,11 @@ export default function LeasingForm() {
         </div>
       )}
 
-      {sent && <p role="status">Thank you — your enquiry has been sent to our leasing team.</p>}
+      {sent && (
+        <p role="status" className="form__sent">
+          Thank you — your enquiry has been sent to our leasing team.
+        </p>
+      )}
 
       <div className="form__field">
         <label htmlFor="name">Your name</label>

@@ -51,10 +51,10 @@ export default function ContactForm() {
   const describedBy = (field: string) => (errors[field] ? `${field}-error` : undefined)
 
   return (
-    <form onSubmit={onSubmit} noValidate>
+    <form onSubmit={onSubmit} noValidate className="form">
       {Object.keys(errors).length > 0 && (
-        <div ref={summaryRef} role="alert" tabIndex={-1}>
-          <h2>There is a problem</h2>
+        <div ref={summaryRef} role="alert" tabIndex={-1} className="form__summary">
+          <h3>There is a problem</h3>
           <ul>
             {Object.entries(errors).map(([field, message]) => (
               <li key={field}>
@@ -65,9 +65,9 @@ export default function ContactForm() {
         </div>
       )}
 
-      {sent && <p role="status">Thank you — your message has been sent.</p>}
+      {sent && <p role="status" className="form__sent">Thank you — your message has been sent.</p>}
 
-      <div>
+      <div className="form__field">
         <label htmlFor="name">Your name</label>
         <input
           id="name"
@@ -80,7 +80,7 @@ export default function ContactForm() {
         {errors.name && <p id="name-error">{errors.name}</p>}
       </div>
 
-      <div>
+      <div className="form__field">
         <label htmlFor="email">Email address</label>
         <input
           id="email"
@@ -93,7 +93,7 @@ export default function ContactForm() {
         {errors.email && <p id="email-error">{errors.email}</p>}
       </div>
 
-      <div>
+      <div className="form__field">
         <label htmlFor="message">Message</label>
         <textarea
           id="message"
@@ -113,7 +113,9 @@ export default function ContactForm() {
         <input id="company" name="company" type="text" tabIndex={-1} autoComplete="off" />
       </div>
 
-      <button type="submit">Send message</button>
+      <button type="submit" className="button button--primary">
+        Send message
+      </button>
     </form>
   )
 }

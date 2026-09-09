@@ -65,11 +65,7 @@ export default function Figure({ id, priority = false, sizes = "100vw", classNam
             {need ? `[photograph not yet supplied: ${need}]` : "[photograph not yet supplied]"}
           </span>
         </div>
-        {caption && (
-          <figcaption className="eyebrow" style={{ marginTop: "0.75rem", opacity: 0.75 }}>
-            {caption}
-          </figcaption>
-        )}
+        {caption && <figcaption className="figure__caption">{caption}</figcaption>}
       </figure>
     )
   }
@@ -80,10 +76,19 @@ export default function Figure({ id, priority = false, sizes = "100vw", classNam
     <figure className={className} style={{ margin: 0 }}>
       <Image src={src} alt={alt} width={width} height={height} priority={priority} sizes={sizes} />
       {(caption || credit) && (
-        <figcaption className="eyebrow" style={{ marginTop: "0.75rem", opacity: 0.75 }}>
+        /*
+         * Captions are sentences, so they are set as sentences. They used to
+         * carry .eyebrow, which is uppercase and letterspaced — fine for a
+         * two-word label, unreadable for "Rendering, subject to change. The
+         * tower still carries the original Riverview Inn signage…", which is
+         * exactly the kind of caption this site's honesty rules require. The
+         * credit keeps the small-caps treatment, so it still reads as
+         * attribution rather than as part of the sentence.
+         */
+        <figcaption className="figure__caption">
           {caption}
-          {caption && credit ? " · " : ""}
-          {credit}
+          {caption && credit ? " " : ""}
+          {credit && <span className="figure__credit">{credit}</span>}
         </figcaption>
       )}
     </figure>

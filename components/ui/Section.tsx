@@ -10,8 +10,12 @@ type Props = {
    * separate heading element just for that.
    */
   headingLevel?: 1 | 2
-  /** "paper" is the default ground; "ink" and "limestone" break up the scroll. */
-  tone?: "paper" | "ink" | "limestone"
+  /**
+   * "paper" is the default ground; "ink", "limestone" and "river" break up
+   * the scroll. "river" is the brand ground — use it for at most one band
+   * per page, or it stops reading as emphasis.
+   */
+  tone?: "paper" | "ink" | "limestone" | "river"
   /** Full-bleed bands hold imagery edge to edge; the default constrains to the grid. */
   fullBleed?: boolean
   divider?: boolean

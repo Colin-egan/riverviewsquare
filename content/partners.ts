@@ -14,14 +14,14 @@ export const partnerSchema = z.object({
   role: z.string().nullable(),
   url: urlSchema,
   /**
-   * Media id of the logo, once the client supplies logo files. Stays
-   * `z.string().nullable()` rather than `MediaId | null`: content/media.ts
-   * currently ships `media = [] as const`, so `MediaId` is `never` and
-   * `MediaId | null` would collapse to exactly `null`, an unusable field
-   * type. Every value here is null today regardless. Any id placed here in
-   * future must first be registered in content/media.ts — Figure's closed
-   * id union (MediaId | PlannedMediaId) enforces that at the point of use,
-   * not here.
+   * Media id of the logo, or null where the client has not supplied one.
+   * Still `z.string().nullable()` rather than `MediaId | null`, but the
+   * reason has changed: content/media.ts is no longer empty (so `MediaId`
+   * is a real union now), yet importing it here to narrow this field would
+   * make the content layer depend on the media layer for a value that is
+   * only ever consumed by Figure. Figure's closed id union
+   * (MediaId | PlannedMediaId) already rejects an unregistered id at the
+   * point of use, which is where the error belongs.
    */
   logoMediaId: z.string().nullable(),
 })
@@ -42,7 +42,8 @@ export const partners: Partner[] = z.array(partnerSchema).parse([
     // here.
     role: "Developer",
     url: "https://bna-re.com",
-    logoMediaId: null,
+    // Logo pulled from the client's live site on 2026-09-09.
+    logoMediaId: "partner-logo-bna",
   },
   {
     slug: "cooper-carry",
@@ -54,6 +55,11 @@ export const partners: Partner[] = z.array(partnerSchema).parse([
     // Square", 11/19/21.
     role: "Design firm",
     url: "https://www.coopercarry.com",
+    // No logo. The scrape produced a mark for The Johnson Studio (Cooper
+    // Carry's restaurant and hospitality studio), which is a distinct brand
+    // from Cooper Carry itself — using it here would misattribute the firm.
+    // Registered as partner-logo-johnson-studio in content/media.ts if that
+    // studio is ever credited in its own right.
     logoMediaId: null,
   },
   {
@@ -66,6 +72,14 @@ export const partners: Partner[] = z.array(partnerSchema).parse([
     // page.
     role: "Retail leasing",
     url: "https://www.foundrycommercial.com",
+    // No logo on the client's site to scrape. Note for whoever picks this
+    // up: the live site does carry an OJAS Partners logo and a news item
+    // titled "OJAS Partners leasing Riverview Square", which does not agree
+    // with this entry naming Foundry Commercial as the leasing team. One of
+    // the two is stale. That mark is registered as partner-logo-ojas in
+    // content/media.ts, unused, pending the client resolving which firm is
+    // current — this file's verified research trail is not overridden on the
+    // strength of a logo found in a scrape.
     logoMediaId: null,
   },
   {
@@ -82,6 +96,7 @@ export const partners: Partner[] = z.array(partnerSchema).parse([
     // problem, and this is the page's one deliberate visible gap.
     role: null,
     url: "https://oliverhospitality.com",
-    logoMediaId: null,
+    // Logo pulled from the client's live site on 2026-09-09.
+    logoMediaId: "partner-logo-oliver-hospitality",
   },
 ])

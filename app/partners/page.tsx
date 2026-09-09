@@ -1,7 +1,9 @@
 import type { Metadata } from "next"
+import Image from "next/image"
 import Section from "@/components/ui/Section"
 import ContactForm from "@/components/ContactForm"
 import { getPartners } from "@/lib/data/partners"
+import { getMedia, type MediaId } from "@/lib/data/media"
 import { placeholder } from "@/lib/content"
 
 export const metadata: Metadata = {
@@ -24,9 +26,27 @@ export default function Partners() {
 
       <Section tone="limestone" divider>
         <ul className="partners">
-          {partners.map(({ slug, name, role, url }) => (
+          {partners.map(({ slug, name, role, url, logoMediaId }) => (
             <li key={slug} className="partner">
               <p className="eyebrow partner__role">{placeholder(role, "role")}</p>
+              {/*
+               * The logo is decorative here, never the name: it is rendered
+               * with an empty alt because the linked heading immediately
+               * below already carries the firm's name. Only two of the four
+               * partners have supplied a mark, so the card is designed to
+               * work without one — the name is always the anchor and the
+               * logo sits above it when it exists.
+               */}
+              {logoMediaId && (
+                <Image
+                  src={getMedia(logoMediaId as MediaId).src}
+                  alt=""
+                  width={getMedia(logoMediaId as MediaId).width}
+                  height={getMedia(logoMediaId as MediaId).height}
+                  className="partner__logo"
+                  sizes="200px"
+                />
+              )}
               <h2 className="partner__name">
                 <a href={url}>{name}</a>
               </h2>
