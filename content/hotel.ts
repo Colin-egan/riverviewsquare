@@ -1,6 +1,7 @@
 /**
  * The DoubleTree by Hilton Clarksville Riverview — the hotel component of
- * Riverview Square, open and taking reservations since 1 October 2024. The
+ * Riverview Square, open and taking reservations since 1 October 2024
+ * (ClarksvilleNow opening coverage, cited on `rooms` below). The
  * old Squarespace site never presented it as bookable; this page corrects
  * that (see D3 in constraints.md).
  *
@@ -39,6 +40,10 @@ export const hotel: Hotel = hotelSchema.parse({
     // harvestkitchenandspirits.com, the restaurant's own site — the name is
     // written with spaces around the plus. First floor at 50 College St.
     name: "Harvest Kitchen + Spirits",
+    // Client's own live hotel page, read 2026-09-05, verbatim. The restaurant
+    // describes itself differently ("a fresh update to traditional regional
+    // and classic American dishes") — the client's wording is kept because
+    // this is the client's page, but the two are not the same sentence.
     description: "Elevated casual cuisine and weekend brunch.",
   },
   meeting: {
@@ -60,7 +65,9 @@ export const hotel: Hotel = hotelSchema.parse({
   amenities: [
     // Client's own live hotel page, read 2026-09-05.
     "Fitness center with cardio equipment, free weights and yoga mats",
+    // Client's own live hotel page, read 2026-09-05.
     "Private dining for groups up to 20",
+    // Client's own live hotel page, read 2026-09-05.
     "Walkable access to shopping, dining and entertainment",
   ],
 })
