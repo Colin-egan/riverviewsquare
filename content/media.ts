@@ -90,6 +90,14 @@ export const plannedMedia = [
     // in frame so it cannot be confused with the historic Riverview Inn shot.
     need: "Current daylight exterior of the DoubleTree by Hilton Clarksville Riverview at 50 College Street, framed to show the DoubleTree by Hilton entrance signage, the reworked street-facing entrance and ground-floor glazing, and modern streetscape (parked cars, lighting, landscaping) that unmistakably reads as present-day.",
   },
+  {
+    id: "retail-rendering",
+    // The leasing page's one full-bleed image. Cooper Carry (the announced
+    // design firm, per constraints.md) has not delivered a rendering yet —
+    // no photograph exists of retail space that has not been built, so this
+    // stays a labelled gap rather than an invented image.
+    need: "Cooper Carry rendering of the College Street ground-floor retail court at Riverview Square — storefronts, signage zones and outdoor seating area, framed to show the space a prospective tenant would actually lease, captioned 'subject to change'.",
+  },
 ] as const satisfies readonly PlannedMedia[]
 
 // Validates at import, exactly as `media` does above.
