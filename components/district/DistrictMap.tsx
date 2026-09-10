@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef } from "react"
-import { Map as MapLibreMap, Marker, NavigationControl, addProtocol } from "maplibre-gl"
+import { Map as MapLibreMap, Marker, NavigationControl, addProtocol, setWorkerUrl } from "maplibre-gl"
 import { Protocol } from "pmtiles"
 import { buildMapStyle, type MapTokens } from "@/lib/map-style"
 import { AMENITY_CATEGORIES, DISTRICT_BBOX, type Amenity, type AmenityCategory } from "@/lib/data/amenities"
@@ -15,6 +15,34 @@ function registerPmtilesProtocol() {
   if (protocolRegistered) return
   addProtocol("pmtiles", new Protocol().tile)
   protocolRegistered = true
+}
+
+/**
+ * Point MapLibre at a worker we serve ourselves, instead of the one it tries
+ * to build at runtime.
+ *
+ * MapLibre 6 parses vector tiles in a Web Worker (raster it does on the main
+ * thread). It boots that worker from a generated blob that imports
+ * `new URL("./maplibre-gl-worker.mjs", import.meta.url)`. Once Turbopack has
+ * bundled maplibre, `import.meta.url` points at the bundled chunk, that
+ * sibling file does not exist there, the worker's import fails, and the
+ * worker closes on creation.
+ *
+ * Nothing about that failure is loud. No error event fires, the source
+ * reports `_sourceLoaded: true`, markers place correctly, and the background
+ * layer paints — so the map looks alive while every vector source sits at
+ * zero covering tiles and the basemap stays blank. That is the bug this
+ * fixes; see scripts/sync-maplibre-worker.mjs for the file copy and the
+ * drift check that keeps it in step with the installed maplibre.
+ *
+ * Must run before the first Map is constructed — the worker pool is created
+ * with it and the URL is read at that point.
+ */
+let workerUrlSet = false
+function configureSelfHostedWorker() {
+  if (workerUrlSet) return
+  setWorkerUrl("/maplibre/maplibre-gl-worker.mjs")
+  workerUrlSet = true
 }
 
 function readMapTokens(): MapTokens {
@@ -47,6 +75,7 @@ export default function DistrictMap({ amenities, activeCategories, selectedSlug,
   useEffect(() => {
     const container = containerRef.current
     if (!container || mapRef.current) return
+    configureSelfHostedWorker()
     registerPmtilesProtocol()
 
     const map = new MapLibreMap({

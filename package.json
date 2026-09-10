@@ -8,8 +8,9 @@
     "start": "next start",
     "tokens": "node scripts/build-tokens.mjs",
     "basemap": "node scripts/build-basemap.mjs",
-    "test": "node scripts/build-tokens.mjs --check && vitest run",
-    "a11y": "next build && node scripts/a11y.mjs"
+    "test": "node scripts/build-tokens.mjs --check && node scripts/sync-maplibre-worker.mjs --check && vitest run",
+    "a11y": "next build && node scripts/a11y.mjs",
+    "maplibre-worker": "node scripts/sync-maplibre-worker.mjs"
   },
   "dependencies": {
     "@protomaps/basemaps": "5.7.2",
