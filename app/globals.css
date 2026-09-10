@@ -477,7 +477,23 @@ p { text-wrap: pretty; max-width: var(--measure); }
 }
 .districtmap-frame__attribution a { color: inherit; }
 
+/* MapLibre writes each marker's position into this element's inline
+   `transform`, which outranks anything the stylesheet says about transform.
+   So the dot is drawn on a pseudo-element instead, whose transform the
+   positioning never touches — that is the only reason the selected pin can
+   grow at all. On .pin itself the scale below silently did nothing, leaving a
+   map click with no visible answer. Keep the visual on ::before. */
 .pin {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+  line-height: 0;
+  cursor: pointer;
+}
+.pin::before {
+  content: "";
+  display: block;
   width: 1.05rem;
   height: 1.05rem;
   border-radius: 50%;
@@ -485,23 +501,34 @@ p { text-wrap: pretty; max-width: var(--measure); }
   /* Set per-element from AMENITY_CATEGORIES in DistrictMap.tsx — the single
      source of truth for category colour. */
   background: var(--pin-color);
-  cursor: pointer;
-  padding: 0;
   box-shadow: 0 1px 3px rgb(0 0 0 / 0.35);
-  transition: transform 120ms ease;
+  transition: transform 120ms ease, box-shadow 120ms ease;
 }
 
 /* The project itself: larger, ringed, unmistakable. */
-.pin[data-anchor="true"] {
+.pin[data-anchor="true"]::before {
   width: 1.6rem;
   height: 1.6rem;
   border-width: 3px;
   box-shadow: 0 0 0 3px var(--color-brick), 0 1px 4px rgb(0 0 0 / 0.4);
 }
-.pin[data-selected="true"] { transform: scale(1.45); }
+
+.pin:hover::before { transform: scale(1.2); }
+
+/* Selected state is carried by a ring as well as size, so it still reads on
+   the anchor pin — already the biggest dot on the map, where growing a little
+   more would say nothing. Later than the anchor and hover rules on purpose:
+   equal specificity, so source order is what lets it win on both. */
+.pin[data-selected="true"]::before {
+  transform: scale(1.45);
+  box-shadow: 0 0 0 2px var(--color-paper), 0 0 0 4px var(--color-ink), 0 1px 4px rgb(0 0 0 / 0.4);
+}
+/* Markers are absolutely positioned siblings and overlap at low zoom; the
+   selected one has to come out on top of its neighbours. */
+.pin[data-selected="true"] { z-index: 2; }
 
 @media (prefers-reduced-motion: reduce) {
-  .pin { transition: none; }
+  .pin::before { transition: none; }
 }
 
 .explorer { max-width: 84rem; margin-inline: auto; padding-inline: clamp(1rem, 4vw, 3rem); }
