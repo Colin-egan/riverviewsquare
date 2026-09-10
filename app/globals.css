@@ -443,13 +443,32 @@ p { text-wrap: pretty; max-width: var(--measure); }
  */
 .suiteexplorer { display: grid; gap: 2.5rem; margin-top: 2.5rem; }
 .suiteexplorer__plans { display: grid; gap: 2.5rem; }
-.suiteexplorer__aside { display: grid; gap: 2rem; align-content: start; }
+.suiteexplorer__aside { display: grid; align-content: start; }
 
 @media (min-width: 64rem) {
   .suiteexplorer { grid-template-columns: minmax(0, 2fr) minmax(18rem, 1fr); align-items: start; }
   /* The card follows the reader down a tall pair of drawings rather than
      sitting off-screen while they scan the second plan. */
   .suiteexplorer__aside { position: sticky; top: 2rem; }
+
+  /*
+   * Nothing selected: the drawings take the whole band. Once the suite
+   * list was removed there was nothing left to occupy the second column
+   * before a click, so reserving it permanently squeezed the plans to
+   * two-thirds width and left a third of the band empty on every visit —
+   * and these are dense line drawings whose suite numbers are set in small
+   * type, so width is legibility, not luxury.
+   *
+   * The trade is that opening a card resizes the drawings once. That is
+   * deliberately not animated: an instant change reads as the layout
+   * responding to the click, where a slow one reads as the page sliding
+   * out from under the pointer. The suite stays highlighted throughout, so
+   * the eye has something to re-find it by.
+   *
+   * Browsers without :has() simply keep the two-column layout above and
+   * the reserved gutter, which is the previous behaviour, not a break.
+   */
+  .suiteexplorer:has(.suiteexplorer__detail:empty) { grid-template-columns: minmax(0, 1fr); }
 }
 
 .suiteplan__frame { position: relative; }
@@ -479,21 +498,24 @@ p { text-wrap: pretty; max-width: var(--measure); }
   display: grid;
   place-items: center;
   /*
-   * Visible at rest, faintly. A fully transparent hotspot is a secret:
-   * nothing on the drawing tells you the suites can be clicked, and the
-   * only people who find out are the ones who happen to move a mouse
-   * across it. The tint is kept to 7% so the printed suite numbers and
-   * areas underneath — which are small type on white — stay legible, and
-   * the hairline does most of the work of saying "this is a region".
+   * The blue wash is ALWAYS on. A transparent hotspot is a secret: nothing
+   * on the drawing says the suites can be clicked, and only someone who
+   * happens to drag a mouse across one finds out.
+   *
+   * It is the signal token rather than river, so the resting state is the
+   * same blue the suite turns when you hover or pick it — one colour
+   * getting stronger, not a green that becomes a blue. 16% keeps it slight:
+   * the suite numbers and areas underneath are small type on white and stay
+   * legible, checked against the artwork.
    */
-  background: color-mix(in srgb, var(--color-river) 7%, transparent);
-  border: 1px solid color-mix(in srgb, var(--color-river) 38%, transparent);
+  background: color-mix(in srgb, var(--color-signal) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-river) 40%, transparent);
   transition: background-color 120ms ease, border-color 120ms ease;
 }
-.suitehot:hover { background: color-mix(in srgb, var(--color-signal) 28%, transparent); border-color: var(--color-river); }
+.suitehot:hover { background: color-mix(in srgb, var(--color-signal) 34%, transparent); border-color: var(--color-river); }
 .suitehot:focus-visible { outline: 3px solid var(--color-ink); outline-offset: 2px; }
 .suitehot[aria-pressed="true"] {
-  background: color-mix(in srgb, var(--color-signal) 42%, transparent);
+  background: color-mix(in srgb, var(--color-signal) 52%, transparent);
   border-color: var(--color-river);
 }
 
@@ -522,30 +544,6 @@ p { text-wrap: pretty; max-width: var(--measure); }
 .suitehot:hover .suitehot__tag,
 .suitehot:focus-visible .suitehot__tag,
 .suitehot[aria-pressed="true"] .suitehot__tag { opacity: 1; }
-
-.suitelist { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem; }
-.suitelist__item {
-  width: 100%;
-  display: grid;
-  gap: 0.15rem;
-  text-align: left;
-  background: transparent;
-  border: 0;
-  border-top: 2px solid var(--color-limestone);
-  padding: 0.75rem 0 0;
-  cursor: pointer;
-  color: inherit;
-  font: inherit;
-}
-.suitelist__item:hover { border-top-color: var(--color-ink); }
-.suitelist__item:focus-visible { outline: 3px solid var(--color-ink); outline-offset: 2px; }
-.suitelist__item[aria-pressed="true"] { border-top-color: var(--color-river); border-top-width: 3px; }
-.suitelist__name { font-family: var(--font-display); font-size: var(--step-0); }
-.suitelist__meta { font-size: var(--step--1); opacity: 0.8; }
-.suitelist__status { margin: 0.2rem 0 0; }
-.suitelist__status[data-status="available"] { color: var(--color-river); }
-.suitelist__status[data-status="leased"],
-.suitelist__status[data-status="lease-out"] { color: var(--color-brick); }
 
 .suitedetail {
   border: 1px solid var(--color-limestone);

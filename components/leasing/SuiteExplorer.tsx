@@ -1,7 +1,6 @@
 "use client"
 
 import SuiteDetail from "@/components/leasing/SuiteDetail"
-import SuiteList from "@/components/leasing/SuiteList"
 import SuitePlan from "@/components/leasing/SuitePlan"
 import { useSuiteSelection } from "@/components/leasing/useSuiteSelection"
 import type { Suite } from "@/lib/data/suites"
@@ -38,15 +37,19 @@ export default function SuiteExplorer({ suites }: Props) {
         />
       </div>
       <div className="suiteexplorer__aside">
-        <SuiteList suites={suites} selectedSlug={selectedSlug} onSelect={select} />
         {/*
-         * Always in the DOM, empty until a suite is picked. The card itself
-         * only appears on selection — an empty "select a suite" box sitting
-         * there permanently is furniture, not information — but the live
-         * region announcing it must persist, because a screen reader does
-         * not reliably announce an aria-live element that was inserted at
-         * the same moment as its content. CSS hides the wrapper while empty
-         * so it takes up no space.
+         * The card for the selected suite, and the only place suite
+         * information appears — there is no list of all thirteen any more,
+         * by request: one suite shows at a time, the one you clicked.
+         *
+         * This wrapper is always in the DOM and empty until then. The card
+         * itself only appears on selection, but the live region announcing
+         * it must persist, because a screen reader does not reliably
+         * announce an aria-live element inserted at the same moment as its
+         * content. CSS hides the wrapper while empty so it takes up no
+         * space, while the grid column it sits in stays reserved — the
+         * drawings must not resize under the cursor at the moment of a
+         * click.
          */}
         <div className="suiteexplorer__detail" aria-live="polite">
           {selected && <SuiteDetail suite={selected} />}
