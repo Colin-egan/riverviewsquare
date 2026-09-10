@@ -81,6 +81,53 @@ describe("media manifest", () => {
     expect(new Set(ids).size).toBe(ids.length)
   })
 
+  /*
+   * Attribution invariants for photographs this project does not own.
+   *
+   * These five (the downtown Clarksville strip on the home page) are used
+   * under public licences, and a licence is only honoured if the credit
+   * actually ships. Figure renders whatever `license` block the registry
+   * holds, so these assertions are the thing standing between "we registered
+   * a licensed photo" and "we published someone's work uncredited".
+   */
+  const licensed = ALL_MEDIA.filter((m) => m.license)
+
+  it("has at least one licensed image, so the checks below are not vacuous", () => {
+    expect(licensed.length).toBeGreaterThan(0)
+  })
+
+  it.each(licensed)("$id names a photographer", ({ license }) => {
+    expect(license!.author.trim().length).toBeGreaterThanOrEqual(2)
+  })
+
+  it.each(licensed)("$id links the file it came from over https", ({ license }) => {
+    expect(license!.source).toMatch(/^https:\/\//)
+  })
+
+  it.each(licensed)("$id names a licence, and links its deed unless public domain", ({ license }) => {
+    expect(license!.name.trim().length).toBeGreaterThanOrEqual(2)
+    if (license!.url === null) {
+      // The only licence with no deed to link. Anything else holding a null
+      // url is an attribution that has quietly lost half its meaning.
+      expect(license!.name).toBe("Public domain")
+    } else {
+      expect(license!.url).toMatch(/^https:\/\//)
+    }
+  })
+
+  /*
+   * Visit Clarksville's media gallery restricts its photographs to editorial
+   * use and states that "any commercial or for-profit usage is strictly
+   * prohibited". This is a leasing site for a for-profit development, so
+   * none of their files may be published here — with or without a credit,
+   * since attribution does not widen an editorial-only licence. If the
+   * client ever obtains written permission, this test is the thing to come
+   * and change, deliberately, along with the note in content/media.ts.
+   */
+  it.each(licensed)("$id is not sourced from a gallery that forbids commercial use", ({ license }) => {
+    expect(license!.source).not.toMatch(/visitclarksvilletn\.com/i)
+  })
+
   it("throws on an unknown id rather than rendering a broken image", () => {
     // @ts-expect-error deliberately invalid id
     expect(() => getMedia("does-not-exist")).toThrow()

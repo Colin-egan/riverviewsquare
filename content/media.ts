@@ -1,5 +1,32 @@
 import { z } from "zod"
 
+/**
+ * The three facts a third-party photograph cannot be published without, kept
+ * as one object because they are useless apart: naming the photographer
+ * without naming the licence does not tell a reader what they may do with
+ * the picture, and naming the licence without linking the file page gives
+ * them no way to check. zod requires all three or none, which is the whole
+ * point — there is no way to record half an attribution.
+ *
+ * Only for images this project does NOT own. The client's own renderings and
+ * property photography carry `credit` (or null) and no licence: they are
+ * used by permission, not under a public licence, and inventing a licence
+ * name for them would be exactly the kind of made-up business fact the rest
+ * of this file exists to prevent.
+ */
+export const licenseSchema = z.object({
+  /** The licence's own short name, verbatim: "CC BY-SA 4.0", "Public domain". */
+  name: z.string().min(2),
+  /** Deed URL. Null only for public domain, which has no deed to link. */
+  url: z.url().nullable(),
+  /** Where the file came from, so the claim above can be checked. */
+  source: z.url(),
+  /** The photographer, as the source names them. */
+  author: z.string().min(2),
+})
+
+export type MediaLicense = z.infer<typeof licenseSchema>
+
 export const mediaSchema = z.object({
   id: z.string(),
   src: z.string().startsWith("/media/"),
@@ -14,6 +41,15 @@ export const mediaSchema = z.object({
   height: z.number().int().positive(),
   credit: z.string().nullable(),
   era: z.enum(["historic", "current", "rendering"]),
+  /**
+   * Present only on images licensed from someone else. Optional rather than
+   * nullable so the eighteen client-supplied entries below did not have to
+   * grow a `license: null` line that says nothing; absent means "ours, used
+   * by permission". Figure renders this whenever it exists, so adding it is
+   * what publishes the attribution — there is no way to register a licensed
+   * image and forget to credit it.
+   */
+  license: licenseSchema.optional(),
 })
 
 export type MediaItem = z.infer<typeof mediaSchema>
@@ -216,6 +252,114 @@ export const media = [
     height: 980,
     credit: null,
     era: "current",
+  },
+  /*
+   * -------------------------------------------------------------------------
+   * The neighbourhood, photographed by other people.
+   * -------------------------------------------------------------------------
+   *
+   * Everything above this line is the client's own — their renderings, their
+   * property. These five are not, and that changes what has to travel with
+   * them. Each carries a `license` block naming the photographer, the licence
+   * and the file page it came from, and Figure publishes all three wherever
+   * the image appears. Downloaded from Wikimedia Commons on 2026-09-10 and
+   * downscaled to 1200px; every `alt` was written while looking at the file.
+   *
+   * WHY THESE AND NOT VISIT CLARKSVILLE'S. Visit Clarksville's media gallery
+   * is the obvious source for downtown photography and its terms rule this
+   * site out: "these images are to be used for editorial purposes to promote
+   * Clarksville as a tourism destination… Federal copyright laws prohibit the
+   * use of these photos for any other purpose, including advertising use. Any
+   * commercial or for-profit usage is strictly prohibited." A leasing site
+   * for a for-profit development is advertising use, and crediting them does
+   * not convert an editorial-only licence into a commercial one. If the
+   * client gets written permission from Visit Clarksville, their photographs
+   * can be added here with `license.name` recording the terms of that grant —
+   * do not add them before that permission exists.
+   *
+   * These are also, deliberately, the actual places the neighbourhood copy
+   * names — Franklin Street, the Roxy, the Cumberland. Generic stock of some
+   * other town's brewery captioned as Clarksville would break the same
+   * no-invented-facts rule from the other direction.
+   */
+  {
+    id: "franklin-street-roxy-day",
+    src: "/media/franklin-street-roxy-day.jpg",
+    alt: "Looking down Franklin Street in downtown Clarksville on a summer afternoon: two- and three-storey 19th-century brick storefronts with awnings line both sides, cars are parked at the kerb under young street trees, and the Roxy Regional Theatre's tall vertical marquee stands at the right with a painted mural of historic buildings on the gable end beyond it.",
+    width: 1200,
+    height: 900,
+    credit: null,
+    era: "current",
+    license: {
+      name: "CC BY-SA 4.0",
+      url: "https://creativecommons.org/licenses/by-sa/4.0/",
+      source: "https://commons.wikimedia.org/wiki/File:Downtown_Clarksville_TN.jpg",
+      author: "GatewayPolitics",
+    },
+  },
+  {
+    id: "franklin-street-roxy-night",
+    src: "/media/franklin-street-roxy-night.jpg",
+    alt: "The same block of Franklin Street after dark, seen from above: the Roxy Regional Theatre's neon sign and lit marquee glow at the right, shopfront awnings and street lamps light the sidewalk, people stand in groups outside the theatre, and the wet road runs away into the blue of the evening.",
+    width: 1200,
+    height: 768,
+    credit: null,
+    era: "current",
+    license: {
+      // Public domain has no deed page to link, so `url` is null rather than
+      // pointed at a licence that does not exist. The credit still runs: the
+      // photographer released the rights, they did not stop being the
+      // photographer.
+      name: "Public domain",
+      url: null,
+      source: "https://commons.wikimedia.org/wiki/File:DowntownClarksville.jpg",
+      author: "Tenn 931",
+    },
+  },
+  {
+    id: "clarksville-downtown-mural",
+    src: "/media/clarksville-downtown-mural.jpg",
+    alt: "A painted mural covering the whole brick gable wall of a downtown Clarksville building, showing the town's 19th-century churches, spires, a courthouse and mansard-roofed houses among trees under a clouded sky, with a wrought-iron fence and a parking lot in front of it.",
+    width: 1200,
+    height: 900,
+    credit: null,
+    era: "current",
+    license: {
+      name: "CC BY-SA 3.0",
+      url: "https://creativecommons.org/licenses/by-sa/3.0/",
+      source: "https://commons.wikimedia.org/wiki/File:ClarksvilleMural.jpg",
+      author: "Jugarum",
+    },
+  },
+  {
+    id: "cumberland-riverfront",
+    src: "/media/cumberland-riverfront-american-queen.jpg",
+    alt: "The paddle steamer American Queen moored at the Clarksville riverfront on the Cumberland, its white tiered decks and two black stacks against a clear sky, a gangway down onto the concrete wharf, a paved riverside path curving away to the right and wooded banks on the far shore.",
+    width: 1200,
+    height: 675,
+    credit: null,
+    era: "current",
+    license: {
+      name: "CC BY-SA 4.0",
+      url: "https://creativecommons.org/licenses/by-sa/4.0/",
+      source: "https://commons.wikimedia.org/wiki/File:American_Queen_Clarksville_Riverfront.jpg",
+      author: "NachoServant",
+    },
+  },
+  {
+    id: "clarksville-federal-building",
+    src: "/media/clarksville-federal-building-mailroom.jpg",
+    alt: "The 1935 Federal Building in downtown Clarksville: a low pale limestone block lettered 'Federal Building' above a colonnaded entrance, a carved seal on the wall to the left, Christmas wreaths on the lamp posts and doors, and cars parked along the street in front.",
+    width: 1130,
+    height: 636,
+    credit: null,
+    era: "current",
+    license: {
+      name: "CC BY 4.0",
+      url: "https://creativecommons.org/licenses/by/4.0/",
+      source: "https://commons.wikimedia.org/wiki/File:1935_Clarksville,_TN_Post_Office.jpg",
+      author: "Just an image guy",
+    },
   },
 ] as const satisfies readonly MediaItem[]
 

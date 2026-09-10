@@ -509,6 +509,72 @@ p { text-wrap: pretty; max-width: var(--measure); }
   background-blend-mode: soft-light;
 }
 
+/*
+ * ---------------------------------------------------------------------------
+ * Photo strip — a row of pictures that scrolls sideways.
+ * ---------------------------------------------------------------------------
+ *
+ * Used on the home page's neighbourhood band, where the argument is "these
+ * places already exist" and the evidence is photographs rather than
+ * renderings. See components/ui/PhotoStrip.tsx for why it carries no arrow
+ * buttons and no autoplay.
+ *
+ * The track is allowed to run out through the band's right-hand gutter and
+ * off the viewport edge: a row that ends flush inside the measure looks
+ * finished, and a strip nobody realises is a strip is just a cropped photo.
+ * The negative margin is matched by padding so the first card still lines up
+ * with the heading above it.
+ */
+.strip {
+  margin-top: 2.5rem;
+  margin-inline-end: calc(-1 * clamp(1rem, 4vw, 3rem));
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  /* Room for the scrollbar so it never sits on top of a credit line. */
+  padding-bottom: 0.75rem;
+}
+.strip__track {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0 clamp(1rem, 4vw, 3rem) 0 0;
+}
+.strip__item {
+  flex: 0 0 auto;
+  width: clamp(15rem, 72vw, 22rem);
+  scroll-snap-align: start;
+}
+.strip__item img {
+  width: 100%;
+  height: auto;
+  /* One shape for five photographs that arrive in three different ratios —
+     without this the row's baseline wanders and the captions stop aligning. */
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+}
+/*
+ * The credits are the one place on this site where a link has to look like a
+ * link: they are how a reader checks the attribution, and they are also what
+ * makes the strip keyboard-scrollable. Everything else here inherits
+ * Tailwind's preflight, which strips underlines — so put one back explicitly
+ * rather than relying on a colour these can't have on a green ground.
+ */
+.strip a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
+}
+.strip .figure__caption { max-width: none; }
+/* The credit sits under the place name rather than running on from it: it is
+   a different kind of statement, and at this width they would otherwise wrap
+   into one grey blur. */
+.strip .figure__credit { display: block; margin-top: 0.35rem; white-space: normal; }
+
+
 .button {
   display: inline-block;
   font-family: var(--font-display);

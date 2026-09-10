@@ -2,6 +2,7 @@ import Link from "next/link"
 import Section from "@/components/ui/Section"
 import Figure from "@/components/ui/Figure"
 import BrandSeal from "@/components/ui/BrandSeal"
+import PhotoStrip from "@/components/ui/PhotoStrip"
 import StatRow from "@/components/ui/StatRow"
 import { getProject } from "@/lib/data/project"
 import { placeholder } from "@/lib/content"
@@ -77,7 +78,27 @@ export default function Home() {
           Regional Theatre and the Customs House Museum. Austin Peay State University sits at the
           north end of College Street.
         </p>
-        <p style={{ marginTop: "1.5rem" }}>
+        {/*
+          The neighbourhood, actually photographed. Everything else on this
+          page is a rendering of a block that is not built yet; these five
+          are photographs of places that already exist a short walk away,
+          which is the whole argument this band is making. Each one is
+          licensed from its photographer and carries the credit — see the
+          licensing note in content/media.ts for why they come from Wikimedia
+          Commons rather than Visit Clarksville's gallery.
+        */}
+        <PhotoStrip
+          label="Photographs of downtown Clarksville"
+          items={[
+            { id: "franklin-street-roxy-day", caption: "Franklin Street and the Roxy Regional Theatre" },
+            { id: "franklin-street-roxy-night", caption: "Franklin Street after dark" },
+            { id: "cumberland-riverfront", caption: "The Cumberland riverfront" },
+            { id: "clarksville-downtown-mural", caption: "The downtown mural" },
+            { id: "clarksville-federal-building", caption: "The 1935 Federal Building" },
+          ]}
+        />
+
+        <p style={{ marginTop: "2.5rem" }}>
           <Link href="/district" className="button button--primary">
             Open the district map
           </Link>
