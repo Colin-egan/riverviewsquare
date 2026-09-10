@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Section from "@/components/ui/Section"
+import PageHero from "@/components/ui/PageHero"
 import Figure from "@/components/ui/Figure"
 import StatRow from "@/components/ui/StatRow"
 import LeasingForm from "@/components/LeasingForm"
@@ -24,7 +25,9 @@ export default function Leasing() {
 
   return (
     <>
-      <Section headingLevel={1} eyebrow="Leasing" heading="Restaurant, entertainment and retail">
+      <PageHero heading="Leasing" eyebrow="Space available" media="retail-court-market" />
+
+      <Section eyebrow="The offer" heading="Restaurant, entertainment and retail">
         <p>
           Ground-floor space at {address.street}, opening onto downtown {address.city} — with a{" "}
           {hotelRooms}-room hotel above it, a {parkingSpaces.toLocaleString()}-space garage beside

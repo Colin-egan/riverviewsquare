@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Section from "@/components/ui/Section"
+import PageHero from "@/components/ui/PageHero"
 import Figure from "@/components/ui/Figure"
 import StatRow from "@/components/ui/StatRow"
 import { getHotel } from "@/lib/data/hotel"
@@ -17,7 +18,9 @@ export default function HotelPage() {
 
   return (
     <>
-      <Section headingLevel={1} eyebrow="Stay" heading={hotel.name}>
+      <PageHero heading="The Hotel" eyebrow="Open now" media="doubletree-entrance-rendering" />
+
+      <Section eyebrow="Stay" heading={hotel.name}>
         <p>
           A {hotel.rooms}-room full-service hotel at {address.street}, in the frame of the original
           Riverview Inn. Open now.

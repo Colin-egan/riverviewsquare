@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import Section from "@/components/ui/Section"
+import PageHero from "@/components/ui/PageHero"
 import ContactForm from "@/components/ContactForm"
 import { getProject } from "@/lib/data/project"
 
@@ -14,7 +15,9 @@ export default function Contact() {
 
   return (
     <>
-      <Section headingLevel={1} eyebrow="Contact" heading="Get in touch">
+      <PageHero heading="Contact" eyebrow="Say hello" media="harvest-lounge" />
+
+      <Section eyebrow="Details" heading="Get in touch">
         <p>
           {name}, {address.street}, {address.city}, {address.state} {address.postalCode}.
         </p>

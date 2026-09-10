@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import Section from "@/components/ui/Section"
+import PageHero from "@/components/ui/PageHero"
 import { getNews } from "@/lib/data/news"
 import { formatDate } from "@/lib/format-date"
 
@@ -14,7 +15,9 @@ export default function News() {
 
   return (
     <>
-      <Section headingLevel={1} eyebrow="News" heading="Coverage and announcements">
+      <PageHero heading="News" eyebrow="From the site" media="doubletree-exterior" />
+
+      <Section eyebrow="Latest" heading="Coverage and announcements">
         <p>Press coverage and announcements about Riverview Square, newest first.</p>
       </Section>
 

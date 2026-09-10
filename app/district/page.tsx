@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Section from "@/components/ui/Section"
+import PageHero from "@/components/ui/PageHero"
 import DistrictExplorer from "@/components/district/DistrictExplorer"
 import { getAmenities } from "@/lib/data/amenities"
 import { getProject } from "@/lib/data/project"
@@ -16,11 +17,9 @@ export default function District() {
 
   return (
     <>
-      <Section
-        headingLevel={1}
-        eyebrow="The district"
-        heading={`What is around us in downtown ${address.city}`}
-      >
+      <PageHero heading="The District" eyebrow="Downtown" media="exchange-building-plaza" />
+
+      <Section eyebrow="Nearby" heading={`What is around us in downtown ${address.city}`}>
         <p>
           Historic Franklin Street runs east from the site. The Cumberland runs west. Between
           them: two breweries, a meadery, the Roxy Regional Theatre, a museum in the 1898 customs

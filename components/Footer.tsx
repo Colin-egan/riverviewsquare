@@ -12,6 +12,22 @@ export default function Footer() {
           the river ground itself, so a river-coloured divider drawn on top
           of it was invisible. The bend still separates bands within a page
           (Section's `divider`) and still masks the home hero. */}
+      {/*
+        The circle mark at size, bleeding off the trailing edge — the mark
+        as material rather than as a logo placement. aria-hidden and empty
+        alt: the wordmark and the address below already name the project,
+        and this is the same file at the same job, so announcing it would
+        be a third repetition of "Riverview Square" in one landmark.
+      */}
+      <Image
+        src="/brand/riverview-square-circle-white.png"
+        alt=""
+        aria-hidden="true"
+        width={532}
+        height={533}
+        className="footer__watermark"
+      />
+
       <div className="footer__grid">
         <div>
           {/* alt="" deliberately: the address immediately below opens with

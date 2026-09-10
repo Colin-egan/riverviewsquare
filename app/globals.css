@@ -180,6 +180,9 @@ p { text-wrap: pretty; max-width: var(--measure); }
 }
 
 .footer {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   margin-top: var(--band);
   background: var(--color-river);
   /* Paired foreground, never inherited: on.river is the validated partner for
@@ -188,6 +191,28 @@ p { text-wrap: pretty; max-width: var(--measure); }
 }
 .footer :focus-visible { outline-color: var(--color-signal); }
 .footer__mark { width: auto; height: 1.75rem; margin-bottom: 1.25rem; }
+/*
+ * The mark at size, half off the trailing edge. Low opacity because it is
+ * behind live text: at full strength the letterforms inside the circle
+ * would fight the address they sit under, and the point is the shape, not
+ * a second reading of the name. Hidden below 64rem — at phone width there
+ * is no margin for it to occupy, so it would land squarely behind the
+ * links instead of beside them.
+ */
+.footer__watermark {
+  display: none;
+  position: absolute;
+  z-index: -1;
+  bottom: -18%;
+  right: -6rem;
+  width: 26rem;
+  height: auto;
+  opacity: 0.07;
+  pointer-events: none;
+}
+@media (min-width: 64rem) {
+  .footer__watermark { display: block; }
+}
 .footer a { color: inherit; }
 .footer__grid {
   display: grid;
@@ -328,6 +353,160 @@ p { text-wrap: pretty; max-width: var(--measure); }
   font-size: var(--step--1);
   color: var(--color-limestone);
   max-width: 46ch;
+}
+
+/*
+ * ---------------------------------------------------------------------------
+ * The page header: one image, one word.
+ * ---------------------------------------------------------------------------
+ *
+ * Every inner route opens with this instead of a text-only band, and every
+ * inner route's h1 is now one or two words — the tab's NAME, not its
+ * summary. The sentence each h1 used to carry ("A 4-acre destination in
+ * downtown Clarksville", "Restaurant, entertainment and retail") did not go
+ * anywhere: it is the h2 of the first band underneath, next to the
+ * paragraph that explains it. That is a better place for it than an h1
+ * anyway — a heading that has to be read to be understood is a sentence
+ * wearing a heading's clothes.
+ *
+ * Deliberately the home hero's construction at a smaller scale rather than
+ * a second, unrelated header pattern: same river-bend mask on the image's
+ * lower edge, same solid `river` panel overlapping it. The type is never
+ * set on the photograph, so the on.river pair (10.8:1) holds no matter what
+ * rendering sits behind. The only difference from `.hero` is height, and
+ * that difference is the hierarchy — home is 70vh, an inner page is 42vh.
+ */
+.pagehero { position: relative; isolation: isolate; }
+.pagehero__media { display: block; }
+.pagehero__media img,
+.pagehero__media .figure__placeholder {
+  width: 100%;
+  height: clamp(13rem, 42vh, 22rem);
+  /* As in .hero: the clamp governs, so drop .figure__placeholder's 16/9. */
+  aspect-ratio: auto;
+  object-fit: cover;
+  /* Slightly below centre. Every source here is taller than this letterbox,
+     and the subject of an architectural rendering is the building, which
+     sits under the sky — a centred crop spent the top third on empty air. */
+  object-position: 50% 58%;
+  /* The same river bend that masks the home hero, rules the bands and
+     colours the map's water. One shape, used everywhere. */
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 600' preserveAspectRatio='none'%3E%3Cpath d='M0 0 H1200 V540 C1020 540 940 585 760 585 S480 552 300 552 S60 576 0 576 Z' fill='%23fff'/%3E%3C/svg%3E");
+  -webkit-mask-size: 100% 100%;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 600' preserveAspectRatio='none'%3E%3Cpath d='M0 0 H1200 V540 C1020 540 940 585 760 585 S480 552 300 552 S60 576 0 576 Z' fill='%23fff'/%3E%3C/svg%3E");
+  mask-size: 100% 100%;
+}
+.pagehero__media figcaption { display: none; }
+.pagehero__copy {
+  max-width: 78rem;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 3rem);
+}
+.pagehero__panel {
+  position: relative;
+  background: var(--color-river);
+  color: var(--color-on-river);
+  padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+  /* A shade less underneath: the h1 is one word at display size, so its
+     line box already contributes leading below the baseline that the
+     eyebrow's does not contribute above it. Even padding measured uneven. */
+  padding-block-end: clamp(1.15rem, 0.65rem + 2vw, 2.15rem);
+  /* Narrower than the home hero's 46rem panel: it holds one word, and a
+     panel sized for a paragraph it does not contain reads as an accident. */
+  max-width: 34rem;
+}
+.pagehero__panel :focus-visible { outline-color: var(--color-signal); }
+.pagehero__panel .eyebrow { color: var(--color-signal); margin: 0 0 0.6rem; }
+/* Tighter than the global 1.05: this h1 is one or two words at --step-5,
+   so the line box's leading below it is the only thing between the word and
+   the panel's bottom edge, and at 1.05 it read as a padding mistake. */
+.pagehero__panel h1 { margin: 0; line-height: 0.95; }
+
+/*
+ * The header already gives the page a wide-open top, and the panel hangs
+ * into the band below it — a full --band of padding on top of that left a
+ * screen's worth of empty paper between the heading and the first sentence.
+ */
+.pagehero + .band { padding-block-start: clamp(2rem, 1rem + 3vw, 4rem); }
+
+@media (min-width: 52rem) {
+  /* Overlap the masked lower edge, as the home hero does — this is where
+     the bend becomes legible as a shape, read against the panel's flat top.
+     Below 52rem the panel simply follows the image: an overlap at phone
+     width would eat the picture. */
+  .pagehero__copy { margin-top: clamp(-5rem, -4vw, -2.5rem); position: relative; z-index: 1; }
+}
+
+/*
+ * ---------------------------------------------------------------------------
+ * The seal.
+ * ---------------------------------------------------------------------------
+ *
+ * The circle mark on its own solid `river` disc, ringed in `signal` — the
+ * mark's two colours doing the same job they do in the river rule, where
+ * river fills and signal traces. The disc exists because the mark file is
+ * reversed white-on-transparent; without a ground of its own it vanishes
+ * into a daylight rendering. See components/ui/BrandSeal.tsx.
+ *
+ * The ring is not trim. Disc and panel are both `river`, so where the seal
+ * overlaps the panel the two greens are the same value and the disc would
+ * have no edge at all on its lower half — the ring is the only thing
+ * describing the shape there.
+ */
+.brandseal {
+  display: grid;
+  place-items: center;
+  width: 4.75rem;
+  height: 4.75rem;
+  border-radius: 50%;
+  background: var(--color-river);
+  box-shadow: 0 0 0 2px var(--color-signal);
+}
+.brandseal img { width: 58%; height: auto; }
+
+/* Straddling the panel's top edge: half on the photograph, half on the
+   green, pinning the one to the other. Right-aligned so it never collides
+   with the eyebrow and heading, which are the things being read. */
+.brandseal--edge {
+  position: absolute;
+  top: 0;
+  right: clamp(1.25rem, 3vw, 2rem);
+  transform: translateY(-50%);
+}
+@media (max-width: 32rem) {
+  .brandseal { width: 3.5rem; height: 3.5rem; }
+}
+
+/*
+ * ---------------------------------------------------------------------------
+ * Brand texture on the river ground.
+ * ---------------------------------------------------------------------------
+ *
+ * The client's pattern (public/brand/riverview-pattern.jpg — an open grid of
+ * hand-drawn squares, their own asset, not a generated texture) blended into
+ * the brand green. The rule is: wherever the ground is `river`, it carries
+ * the pattern. That makes the footer, the one river band a page is allowed,
+ * and the hero panels read as a single surface running through the site
+ * rather than three separate green rectangles.
+ *
+ * `soft-light` rather than a translucent overlay so the texture modulates
+ * the green instead of tinting it toward the pattern's olive — the ground
+ * stays #003B2D and stays the validated partner for on.river. Type on it
+ * has ~10:1 to spend, and the pattern moves the ground by a few points of
+ * lightness, so the pair holds; check it again before putting anything
+ * smaller or lighter than the current copy on this ground.
+ *
+ * Not applied to .pagehero__panel or .hero__panel: a panel is a small
+ * shape sitting on a photograph and a pattern inside it competes with the
+ * picture behind it. Bands and the footer are large flat areas, which is
+ * where a texture reads as material rather than as noise.
+ */
+.band[data-tone="river"],
+.footer {
+  background-image: url("/brand/riverview-pattern.jpg");
+  background-size: 24rem;
+  background-repeat: repeat;
+  background-blend-mode: soft-light;
 }
 
 .button {

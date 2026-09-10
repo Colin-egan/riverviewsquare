@@ -1,6 +1,7 @@
 import Link from "next/link"
 import Section from "@/components/ui/Section"
 import Figure from "@/components/ui/Figure"
+import BrandSeal from "@/components/ui/BrandSeal"
 import StatRow from "@/components/ui/StatRow"
 import { getProject } from "@/lib/data/project"
 import { placeholder } from "@/lib/content"
@@ -18,6 +19,10 @@ export default function Home() {
         <Figure id="home-hero" priority sizes="100vw" className="hero__media" />
         <div className="hero__copy">
           <div className="hero__panel">
+            {/* The same seal every inner page's header carries, so home
+                reads as the tall version of one pattern rather than as a
+                layout of its own. */}
+            <BrandSeal className="brandseal--edge" />
             <p className="eyebrow">
               {address.city}, {address.state}
             </p>

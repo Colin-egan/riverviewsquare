@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 import Section from "@/components/ui/Section"
+import PageHero from "@/components/ui/PageHero"
 import ContactForm from "@/components/ContactForm"
 import { getPartners } from "@/lib/data/partners"
 import { getMedia, type MediaId } from "@/lib/data/media"
@@ -17,7 +18,9 @@ export default function Partners() {
 
   return (
     <>
-      <Section headingLevel={1} eyebrow="Partners" heading="Who is building this">
+      <PageHero heading="Partners" eyebrow="The team" media="retail-corner-sports-bar" />
+
+      <Section eyebrow="Behind the project" heading="Who is building this">
         <p>
           Riverview Square is developed by BNA Associates and designed by Cooper Carry, with retail
           leasing by Foundry Commercial.

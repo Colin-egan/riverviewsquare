@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Section from "@/components/ui/Section"
+import PageHero from "@/components/ui/PageHero"
 import ThenNow from "@/components/ui/ThenNow"
 import StatRow from "@/components/ui/StatRow"
 import { getProject } from "@/lib/data/project"
@@ -15,11 +16,13 @@ export default function About() {
 
   return (
     <>
-      <Section
-        headingLevel={1}
-        eyebrow="About"
-        heading={`A ${acres}-acre destination in downtown ${address.city}`}
-      >
+      <PageHero heading="About" eyebrow="The project" media="retail-aerial-dusk" />
+
+      {/* The sentence that used to be this page's h1 is its h2 now: the tab
+          is called "About" and says so in one word up in the header, and the
+          full description sits here where it can be read alongside the
+          paragraph that expands it. */}
+      <Section eyebrow="In short" heading={`A ${acres}-acre destination in downtown ${address.city}`}>
         <p>
           {name} is a mixed-use destination at {address.street}: a {hotelRooms}-room full-service
           hotel together with retail, dining and entertainment space, developed by BNA Associates
