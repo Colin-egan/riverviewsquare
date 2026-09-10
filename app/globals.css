@@ -10,7 +10,14 @@
 
 /* The skip link is offscreen until focused, then visible and on top. */
 .skip-link {
-  position: absolute;
+  /*
+   * Fixed, not absolute. Absolute positioned it against the top of the
+   * document, which was fine while the page began at the top of the
+   * viewport — but with a sticky masthead a reader can be scrolled far down
+   * and still tab to this link, and an absolute one would take focus to
+   * something rendered off-screen above them.
+   */
+  position: fixed;
   left: -9999px;
   top: 0;
   z-index: 100;
@@ -64,6 +71,13 @@
   --radius-media: 0.75rem;
 }
 
+/*
+ * Anchors and in-page jumps have to clear the sticky masthead, or the thing
+ * being jumped to arrives underneath it. Generous enough for the tallest the
+ * bar gets (two lines of padding plus the wordmark at its clamp ceiling).
+ */
+html { scroll-padding-top: 5.5rem; }
+
 body {
   background: var(--color-paper);
   color: var(--color-ink);
@@ -110,6 +124,24 @@ p { text-wrap: pretty; max-width: var(--measure); }
   letter-spacing: 0.16em;
   text-transform: uppercase;
   font-weight: 600;
+}
+
+/*
+ * The masthead follows the page down. The bar is a solid `river` block, so
+ * nothing bleeds through it as content passes underneath and it needs no
+ * shadow or hairline to separate itself — which suits a site whose every
+ * other surface is flat.
+ *
+ * z-index has to be explicit and it has to be high. Both hero variants set
+ * `isolation: isolate` and their copy panels sit at z-index 1 inside that,
+ * so a header with `auto` would lose to them the moment it overlapped one.
+ * 50 clears everything on the page and stays below the skip link's 100,
+ * which is the one thing that must never be covered.
+ */
+.masthead {
+  position: sticky;
+  top: 0;
+  z-index: 50;
 }
 
 /*
@@ -183,6 +215,11 @@ p { text-wrap: pretty; max-width: var(--measure); }
   }
   .nav__list { display: none; flex-basis: 100%; flex-direction: column; gap: 0; }
   .nav__list[data-open="true"] { display: flex; }
+  /* Stuck to the top, the open menu can no longer run off the bottom of the
+     page and be scrolled to — it has to scroll within the bar instead. Only
+     bites on a short viewport (a phone held sideways); at normal heights the
+     eight links are nowhere near the cap. */
+  .nav__list[data-open="true"] { max-height: calc(100dvh - 8rem); overflow-y: auto; }
   .nav__list li { border-top: 1px solid color-mix(in srgb, var(--color-on-river) 25%, transparent); }
   .nav__list a { display: block; padding: 0.9rem 0; }
 }

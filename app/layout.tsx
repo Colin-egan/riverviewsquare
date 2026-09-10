@@ -48,7 +48,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${archivo.variable} ${sourceSerif.variable}`}>
       <body>
         <SkipLink />
-        <header>
+        {/* The banner landmark. `masthead` exists only to carry the sticky
+            positioning — Navigation styles the bar itself. */}
+        <header className="masthead">
           <Navigation />
         </header>
         <main id="main">{children}</main>
