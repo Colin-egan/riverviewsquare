@@ -54,6 +54,14 @@
   --step-5:  clamp(2.49rem, 1.89rem + 2.97vw, 3.82rem);
   --band: clamp(3rem, 2rem + 5vw, 7rem);
   --measure: 62ch;
+  /*
+   * Corner radius for photographs set inside the measure. Modest on purpose:
+   * the wordmark is square geometric caps, the panels and buttons are hard
+   * rectangles, and a large radius would have the pictures disagreeing with
+   * everything drawn around them. This is enough to read as a softened card
+   * and not enough to read as a different design.
+   */
+  --radius-media: 0.75rem;
 }
 
 body {
@@ -326,6 +334,15 @@ p { text-wrap: pretty; max-width: var(--measure); }
   padding-inline: clamp(1rem, 4vw, 3rem);
 }
 .hero__panel {
+  /*
+   * The seal inside this panel is absolutely positioned against it. Without
+   * this line the panel is static, so the seal resolved against .hero__copy
+   * instead — which is 78rem wide where the panel is 46rem — and the mark
+   * ended up floating 350px clear of the green, alone on the photograph.
+   * .pagehero__panel has carried `position: relative` since it was written;
+   * this is the same rule, and the two have to stay in step.
+   */
+  position: relative;
   background: var(--color-river);
   color: var(--color-on-river);
   padding: clamp(1.75rem, 1rem + 3vw, 3rem);
@@ -573,6 +590,44 @@ p { text-wrap: pretty; max-width: var(--measure); }
    a different kind of statement, and at this width they would otherwise wrap
    into one grey blur. */
 .strip .figure__credit { display: block; margin-top: 0.35rem; white-space: normal; }
+
+
+/*
+ * ---------------------------------------------------------------------------
+ * Rounded corners, and where they stop.
+ * ---------------------------------------------------------------------------
+ *
+ * The rule is about role, not decoration: a photograph laid out INSIDE the
+ * measure is a card and gets a radius; a picture that runs to the viewport
+ * edge is a band and does not. That distinction is why the list below is
+ * explicit rather than a blanket `img { border-radius }`.
+ *
+ * Deliberately NOT rounded, each for its own reason:
+ *
+ *   .hero__media / .pagehero__media — masked by the river bend. A radius on
+ *   a masked element is clipped away along the bottom and applied along the
+ *   top, so the two shapes fight and the image reads as a mistake.
+ *
+ *   .band[data-bleed="true"] figures — these touch both viewport edges. A
+ *   rounded corner against the edge of the window looks like a rendering
+ *   failure, not a decision.
+ *
+ *   .planstack — the leasing drawings are documents, framed in a hairline to
+ *   read as documents. Paper has square corners.
+ *
+ *   Logos and the map — chrome and a widget, not photography.
+ */
+.mediapair img,
+.thennow img,
+.strip__item img {
+  border-radius: var(--radius-media);
+}
+/* The placeholder box a Figure renders for an undelivered shot takes the same
+   radius, so a gap sits in the layout exactly where its photograph will. */
+.mediapair .figure__placeholder,
+.thennow .figure__placeholder {
+  border-radius: var(--radius-media);
+}
 
 
 .button {
