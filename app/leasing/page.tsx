@@ -3,9 +3,11 @@ import Section from "@/components/ui/Section"
 import Figure from "@/components/ui/Figure"
 import StatRow from "@/components/ui/StatRow"
 import LeasingForm from "@/components/LeasingForm"
+import SuiteExplorer from "@/components/leasing/SuiteExplorer"
 import { getProject } from "@/lib/data/project"
 import { getTenants } from "@/lib/data/tenants"
 import { getAmenities } from "@/lib/data/amenities"
+import { getSuites } from "@/lib/data/suites"
 import { placeholder } from "@/lib/content"
 
 export const metadata: Metadata = {
@@ -18,6 +20,7 @@ export default function Leasing() {
   const { retailSquareFeet, parkingSpaces, hotelRooms, arena, leasing, address } = getProject()
   const tenants = getTenants()
   const walkable = getAmenities().filter((a) => !a.isAnchor).length
+  const suites = getSuites()
 
   return (
     <>
@@ -60,37 +63,39 @@ export default function Leasing() {
        * for — so they get their own band rather than being buried under the
        * atmosphere renderings above.
        *
+       * Each space drawn on them is now a button (components/leasing/), so the
+       * numbers set in small type on the artwork can be read as text. The
+       * drawings themselves are unchanged, and each plan's full contents stay
+       * transcribed in its alt text in content/media.ts — that is the route to
+       * these facts with no JavaScript at all, and it does not depend on the
+       * overlay.
+       *
        * The use labels on the drawings ("Mexican", "Pizza", "Hot Chicken/BBQ")
        * are the merchandising plan — what each suite is sized and intended
-       * for — not signed tenants. The caption says so in as many words. The
-       * suite numbers, areas and uses are transcribed into each plan's alt
-       * text in content/media.ts, so the figures are not the only way to get
-       * at the numbers.
+       * for — not signed tenants. Both the prose below and every suite card
+       * say so; the card has to repeat it because the card is what someone
+       * reads after clicking.
+       *
+       * THE SUITE COUNT IS DELIBERATELY NOT STATED. This paragraph used to
+       * open "Twelve ground-floor suites". The drawings show ELEVEN numbered
+       * suites — Retail 1–7 and 9–12; there is no Retail 8 on either sheet —
+       * so either the prose was off by one or there is a Retail 8 nobody has
+       * drawn for us. That is a business fact, so it goes to the client the
+       * same way D1–D4 did, and asserting either number in the meantime
+       * publishes a guess. The sentence works without a count, and the plans
+       * below show exactly what exists. Do not restore a number here until
+       * the client confirms one; see content/suites.ts and
+       * docs/superpowers/specs/2026-09-09-retail-suite-overlay-design.md.
        */}
       <Section eyebrow="The spaces" heading="Suites and sizes" divider>
         <p>
-          Twelve ground-floor suites from 2,500 to 7,500 square feet around a central lawn and
-          splash pad, with two rooftop opportunities above. The uses marked on each suite are the
-          merchandising plan for the block — they show what a space is sized and intended for, not
-          a tenant that has signed.
+          Ground-floor suites from 2,500 to 7,500 square feet around a central lawn and splash pad,
+          with two rooftop opportunities above. Select a suite on either plan — or from the list —
+          for its size, planned use and current availability. The uses marked on each suite are the
+          merchandising plan for the block: they show what a space is sized and intended for, not a
+          tenant that has signed.
         </p>
-        {/* Stacked at full width, not paired side by side: these are dense
-            line drawings whose suite numbers and areas are set in small type,
-            and at half-column width they are decoration rather than
-            information. Each plan's full contents are also transcribed in its
-            alt text, which is the version that survives at any size. */}
-        <div className="planstack">
-          <Figure
-            id="site-plan-retail-lower"
-            sizes="(max-width: 78rem) 100vw, 72rem"
-            caption="Lower level, suites 1–7."
-          />
-          <Figure
-            id="site-plan-retail-upper"
-            sizes="(max-width: 78rem) 100vw, 72rem"
-            caption="Upper level, suites 9–12, with two rooftop opportunities above."
-          />
-        </div>
+        <SuiteExplorer suites={suites} />
       </Section>
 
       <Section tone="limestone" eyebrow="The street" heading="What a customer walks up to" divider>

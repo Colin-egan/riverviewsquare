@@ -1,6 +1,7 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import { enquiryChannel } from "@/components/leasing/enquiryChannel"
 
 type Errors = Record<string, string>
 
@@ -9,6 +10,33 @@ export default function LeasingForm() {
   const [sent, setSent] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const summaryRef = useRef<HTMLDivElement>(null)
+  const formRef = useRef<HTMLFormElement>(null)
+  const nameRef = useRef<HTMLInputElement>(null)
+  const squareFeetRef = useRef<HTMLInputElement>(null)
+  const messageRef = useRef<HTMLTextAreaElement>(null)
+
+  /*
+   * "Enquire about this suite" on the plan above lands here. The fields are
+   * uncontrolled — this form reads FormData on submit and calls form.reset()
+   * — so the prefill is written straight onto the two inputs rather than
+   * held in state. That is deliberate: remounting the form with new
+   * defaultValues (the usual trick for uncontrolled inputs) would wipe
+   * whatever the user had already typed into the other four fields, and
+   * someone who fills in their name and then goes back to pick a suite is
+   * the normal case, not the edge case.
+   *
+   * Seeds only. Both fields stay editable, and the form behaves exactly as
+   * before for anyone who never touches the plan.
+   */
+  useEffect(() => {
+    return enquiryChannel.subscribe(({ squareFeet, message }) => {
+      if (squareFeetRef.current) squareFeetRef.current.value = squareFeet
+      if (messageRef.current) messageRef.current.value = message
+      setSent(false)
+      formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+      nameRef.current?.focus({ preventScroll: true })
+    })
+  }, [])
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -55,7 +83,7 @@ export default function LeasingForm() {
   const describedBy = (field: string) => (errors[field] ? `${field}-error` : undefined)
 
   return (
-    <form onSubmit={onSubmit} noValidate className="form">
+    <form ref={formRef} id="leasing-form" onSubmit={onSubmit} noValidate className="form">
       {Object.keys(errors).length > 0 && (
         <div ref={summaryRef} role="alert" tabIndex={-1} className="form__summary">
           <h3>There is a problem</h3>
@@ -75,7 +103,7 @@ export default function LeasingForm() {
 
       <div className="form__field">
         <label htmlFor="name">Your name</label>
-        <input id="name" name="name" type="text" required autoComplete="name"
+        <input ref={nameRef} id="name" name="name" type="text" required autoComplete="name"
           aria-invalid={errors.name ? true : undefined} aria-describedby={describedBy("name")} />
         {errors.name && <p id="name-error">{errors.name}</p>}
       </div>
@@ -103,14 +131,14 @@ export default function LeasingForm() {
 
       <div className="form__field">
         <label htmlFor="squareFeet">Square feet sought (optional)</label>
-        <input id="squareFeet" name="squareFeet" type="number" min={1} inputMode="numeric"
+        <input ref={squareFeetRef} id="squareFeet" name="squareFeet" type="number" min={1} inputMode="numeric"
           aria-invalid={errors.squareFeet ? true : undefined} aria-describedby={describedBy("squareFeet")} />
         {errors.squareFeet && <p id="squareFeet-error">{errors.squareFeet}</p>}
       </div>
 
       <div className="form__field">
         <label htmlFor="message">Tell us about it</label>
-        <textarea id="message" name="message" rows={6} required
+        <textarea ref={messageRef} id="message" name="message" rows={6} required
           aria-invalid={errors.message ? true : undefined} aria-describedby={describedBy("message")} />
         {errors.message && <p id="message-error">{errors.message}</p>}
       </div>

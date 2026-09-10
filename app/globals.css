@@ -428,6 +428,149 @@ p { text-wrap: pretty; max-width: var(--measure); }
 }
 .planstack .figure__caption { margin-top: 1rem; }
 
+/*
+ * Interactive suite plan (components/leasing/). The drawings keep the
+ * .planstack card treatment above — same white-backed artwork, same
+ * hairline — with a layer of buttons positioned over them in percentages
+ * measured off each image in content/suites.ts.
+ *
+ * Layout: the plans take the full column and the list plus detail card sit
+ * beneath them on a narrow screen, beside them on a wide one. The plans are
+ * line drawings whose suite numbers are set in small type — cramming them
+ * into half a column at phone width would make them decoration rather than
+ * information, which is the same reasoning that made .planstack full width
+ * in the first place.
+ */
+.suiteexplorer { display: grid; gap: 2.5rem; margin-top: 2.5rem; }
+.suiteexplorer__plans { display: grid; gap: 2.5rem; }
+.suiteexplorer__aside { display: grid; gap: 2rem; align-content: start; }
+
+@media (min-width: 64rem) {
+  .suiteexplorer { grid-template-columns: minmax(0, 2fr) minmax(18rem, 1fr); align-items: start; }
+  /* The card follows the reader down a tall pair of drawings rather than
+     sitting off-screen while they scan the second plan. */
+  .suiteexplorer__aside { position: sticky; top: 2rem; }
+}
+
+.suiteplan__frame { position: relative; }
+.suiteplan img { width: 100%; height: auto; display: block; border: 1px solid var(--color-limestone); }
+.suiteplan .figure__caption { margin-top: 1rem; }
+
+/*
+ * Covers the drawing only, never the caption beneath it. The layer is
+ * anchored to the top of the frame at the image's own aspect ratio (set
+ * per-plan from content/media.ts's width and height), because the image is
+ * width:100% and the caption is a sibling below it — an inset:0 layer here
+ * would sit over the caption text and swallow clicks on it.
+ */
+.suiteplan__hotspots {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  aspect-ratio: var(--plan-ratio);
+}
+
+.suitehot {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+.suitehot:hover { background: color-mix(in srgb, var(--color-signal) 28%, transparent); border-color: var(--color-river); }
+.suitehot:focus-visible { outline: 3px solid var(--color-ink); outline-offset: 2px; }
+.suitehot[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--color-signal) 42%, transparent);
+  border-color: var(--color-river);
+}
+
+/* A space that is spoken for is tinted at rest, so availability reads off
+   the drawing without clicking anything. Never colour alone: the button's
+   accessible name and the detail card both state the status in words. */
+.suitehot[data-status="leased"],
+.suitehot[data-status="lease-out"] {
+  background: color-mix(in srgb, var(--color-brick) 22%, transparent);
+  border-color: var(--color-brick);
+}
+
+/* The number badge. Hidden until the suite is hovered, focused or selected:
+   at rest the drawing is the drawing, already carrying its own printed
+   numbers, and thirteen permanent badges would be graffiti over it. */
+.suitehot__tag {
+  font-family: var(--font-display);
+  font-size: var(--step--1);
+  line-height: 1;
+  padding: 0.35em 0.6em;
+  background: var(--color-river);
+  color: var(--color-on-river);
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+.suitehot:hover .suitehot__tag,
+.suitehot:focus-visible .suitehot__tag,
+.suitehot[aria-pressed="true"] .suitehot__tag { opacity: 1; }
+
+.suitelist { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem; }
+.suitelist__item {
+  width: 100%;
+  display: grid;
+  gap: 0.15rem;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-top: 2px solid var(--color-limestone);
+  padding: 0.75rem 0 0;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+}
+.suitelist__item:hover { border-top-color: var(--color-ink); }
+.suitelist__item:focus-visible { outline: 3px solid var(--color-ink); outline-offset: 2px; }
+.suitelist__item[aria-pressed="true"] { border-top-color: var(--color-river); border-top-width: 3px; }
+.suitelist__name { font-family: var(--font-display); font-size: var(--step-0); }
+.suitelist__meta { font-size: var(--step--1); opacity: 0.8; }
+.suitelist__status { margin: 0.2rem 0 0; }
+.suitelist__status[data-status="available"] { color: var(--color-river); }
+.suitelist__status[data-status="leased"],
+.suitelist__status[data-status="lease-out"] { color: var(--color-brick); }
+
+.suitedetail {
+  border: 1px solid var(--color-limestone);
+  border-top: 3px solid var(--color-river);
+  padding: 1.5rem;
+  display: grid;
+  gap: 0.75rem;
+  align-content: start;
+}
+.suitedetail--empty { border-top-color: var(--color-limestone); font-size: var(--step--1); opacity: 0.85; }
+.suitedetail--empty p { margin: 0; }
+.suitedetail__status { margin: 0; color: var(--color-river); }
+.suitedetail__status[data-status="leased"],
+.suitedetail__status[data-status="lease-out"] { color: var(--color-brick); }
+.suitedetail__name { margin: 0; font-size: var(--step-2); }
+.suitedetail__facts { margin: 0; display: grid; gap: 0.6rem; }
+.suitedetail__facts div { display: grid; gap: 0.1rem; }
+.suitedetail__facts dt {
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.7;
+}
+.suitedetail__facts dd { margin: 0; font-size: var(--step-0); }
+/* The merchandising-plan qualifier. Small, but it is the sentence that
+   keeps a planned use from reading as a signed tenant — never hide it. */
+.suitedetail__note { font-size: var(--step--1); opacity: 0.8; margin: 0; }
+.suitedetail__enquire { justify-self: start; margin-top: 0.25rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  .suitehot, .suitehot__tag { transition: none; }
+}
+
 /* Two figures of equal weight, side by side. Same grid as .thennow but
    without the era labels — used where the pair is just two views of the
    same subject rather than a then-and-now claim. */
