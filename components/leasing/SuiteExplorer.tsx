@@ -39,7 +39,18 @@ export default function SuiteExplorer({ suites }: Props) {
       </div>
       <div className="suiteexplorer__aside">
         <SuiteList suites={suites} selectedSlug={selectedSlug} onSelect={select} />
-        <SuiteDetail suite={selected} />
+        {/*
+         * Always in the DOM, empty until a suite is picked. The card itself
+         * only appears on selection — an empty "select a suite" box sitting
+         * there permanently is furniture, not information — but the live
+         * region announcing it must persist, because a screen reader does
+         * not reliably announce an aria-live element that was inserted at
+         * the same moment as its content. CSS hides the wrapper while empty
+         * so it takes up no space.
+         */}
+        <div className="suiteexplorer__detail" aria-live="polite">
+          {selected && <SuiteDetail suite={selected} />}
+        </div>
       </div>
     </div>
   )

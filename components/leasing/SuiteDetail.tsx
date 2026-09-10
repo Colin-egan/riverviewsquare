@@ -4,27 +4,18 @@ import { enquiryChannel } from "@/components/leasing/enquiryChannel"
 import { suitePrefill } from "@/components/leasing/suiteEnquiry"
 import { STATUS_LABEL, enquireLabel, suiteArea, suiteName, type Suite } from "@/lib/data/suites"
 
-type Props = { suite: Suite | null }
+type Props = { suite: Suite }
 
+/**
+ * Rendered only once a suite has been picked — SuiteExplorer holds the
+ * empty case, because the aria-live region announcing this card has to
+ * outlive it (see the wrapper there).
+ */
 export default function SuiteDetail({ suite }: Props) {
-  if (!suite) {
-    return (
-      <div className="suitedetail suitedetail--empty">
-        <p>Select a suite on a plan, or from the list, to see its size, planned use and availability.</p>
-      </div>
-    )
-  }
-
   const area = suiteArea(suite)
 
   return (
-    /*
-     * aria-live, so selecting a hotspot announces the suite that opened.
-     * Without it a screen-reader user presses a button on the plan and
-     * nothing at all is read back — the card updates silently further down
-     * the page.
-     */
-    <div className="suitedetail" aria-live="polite">
+    <div className="suitedetail">
       <p className="eyebrow suitedetail__status" data-status={suite.status}>
         {STATUS_LABEL[suite.status]}
       </p>

@@ -475,11 +475,19 @@ p { text-wrap: pretty; max-width: var(--measure); }
   position: absolute;
   margin: 0;
   padding: 0;
-  border: 1px solid transparent;
-  background: transparent;
   cursor: pointer;
   display: grid;
   place-items: center;
+  /*
+   * Visible at rest, faintly. A fully transparent hotspot is a secret:
+   * nothing on the drawing tells you the suites can be clicked, and the
+   * only people who find out are the ones who happen to move a mouse
+   * across it. The tint is kept to 7% so the printed suite numbers and
+   * areas underneath — which are small type on white — stay legible, and
+   * the hairline does most of the work of saying "this is a region".
+   */
+  background: color-mix(in srgb, var(--color-river) 7%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-river) 38%, transparent);
   transition: background-color 120ms ease, border-color 120ms ease;
 }
 .suitehot:hover { background: color-mix(in srgb, var(--color-signal) 28%, transparent); border-color: var(--color-river); }
@@ -495,7 +503,7 @@ p { text-wrap: pretty; max-width: var(--measure); }
 .suitehot[data-status="leased"],
 .suitehot[data-status="lease-out"] {
   background: color-mix(in srgb, var(--color-brick) 22%, transparent);
-  border-color: var(--color-brick);
+  border-color: color-mix(in srgb, var(--color-brick) 70%, transparent);
 }
 
 /* The number badge. Hidden until the suite is hovered, focused or selected:
@@ -547,8 +555,12 @@ p { text-wrap: pretty; max-width: var(--measure); }
   gap: 0.75rem;
   align-content: start;
 }
-.suitedetail--empty { border-top-color: var(--color-limestone); font-size: var(--step--1); opacity: 0.85; }
-.suitedetail--empty p { margin: 0; }
+/*
+ * The card is absent until a suite is picked, so the live region that
+ * announces it is a persistent wrapper rather than the card itself — a
+ * freshly inserted aria-live element is not reliably announced.
+ */
+.suiteexplorer__detail:empty { display: none; }
 .suitedetail__status { margin: 0; color: var(--color-river); }
 .suitedetail__status[data-status="leased"],
 .suitedetail__status[data-status="lease-out"] { color: var(--color-brick); }
