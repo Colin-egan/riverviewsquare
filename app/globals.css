@@ -572,18 +572,27 @@ p { text-wrap: pretty; max-width: var(--measure); }
  * strip, this is texture rather than content: the same handful of source
  * photographs repeat many times down each column to loop seamlessly, so it
  * is marked aria-hidden in components/ui/DriftWall.tsx and every tile's alt
- * is empty. The reachable, once-per-photo version of the credits is the
- * caption list a caller renders underneath — see the home page.
+ * is empty. Attribution lives only in the lightbox a tile opens into, not on
+ * the wall or the page around it.
  *
  * The hover lift is plain :hover rather than JS-driven state: the tiles sit
  * inside a 3D-transformed plane (drift-wall__plane carries the perspective
  * rotation), but the browser's hit-testing already accounts for that, so no
  * elementFromPoint bookkeeping is needed just to know which tile the pointer
  * is over.
+ *
+ * .driftwall-wrap bleeds to the full viewport width (rather than staying
+ * inside .band__inner's measure) because the plane's rotateY tilt plus its
+ * scale(1.18) make the rendered columns wider than their layout footprint;
+ * at the band's normal content width the rightmost column's tiles were
+ * hard-clipped by .drift-wall's overflow:hidden, worst on pointer hover
+ * where the parallax tilt pushes rotation further still.
  */
 .driftwall-wrap {
   position: relative;
-  height: clamp(22rem, 48vw, 34rem);
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+  height: clamp(28rem, 58vw, 44rem);
   margin-top: 2.5rem;
 }
 .drift-wall {
@@ -667,25 +676,6 @@ p { text-wrap: pretty; max-width: var(--measure); }
     will-change: auto;
   }
 }
-/*
- * The photograph credits underneath the wall — the one place these tiles'
- * attribution is reachable without opening one (see the comment in
- * components/ui/DriftWall.tsx). Same link treatment as .strip a, for the
- * same reason: Tailwind's preflight strips underlines, and a credit has to
- * look like a link to read as one.
- */
-.driftwall-credits {
-  margin-top: 1rem;
-  font-size: 0.8125rem;
-  opacity: 0.8;
-}
-.driftwall-credits a {
-  color: inherit;
-  text-decoration: underline;
-  text-underline-offset: 0.2em;
-  text-decoration-thickness: 1px;
-}
-
 /*
  * The lightbox a tile opens into. Fixed to the viewport, not to .drift-wall
  * — see the doc comment on DriftWallLightbox for why it has to live outside

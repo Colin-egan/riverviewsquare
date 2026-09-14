@@ -2,7 +2,7 @@ import Link from "next/link"
 import Section from "@/components/ui/Section"
 import Figure from "@/components/ui/Figure"
 import BrandSeal from "@/components/ui/BrandSeal"
-import DriftWall, { DriftWallCredits, type DriftWallItem } from "@/components/ui/DriftWall"
+import DriftWall, { type DriftWallItem } from "@/components/ui/DriftWall"
 import StatRow from "@/components/ui/StatRow"
 import { getProject } from "@/lib/data/project"
 import { placeholder } from "@/lib/content"
@@ -89,11 +89,6 @@ export default function Home() {
       </Section>
 
       <Section tone="river" eyebrow="The neighborhood" heading="What is already around you">
-        <p>
-          Historic Franklin Street runs east from the site: two breweries, a meadery, the Roxy
-          Regional Theatre and the Customs House Museum. Austin Peay State University sits at the
-          north end of College Street.
-        </p>
         {/*
           The neighbourhood, actually photographed. Everything else on this
           page is a rendering of a block that is not built yet; these are
@@ -101,8 +96,9 @@ export default function Home() {
           is the whole argument this band is making. Each one is licensed
           from its photographer — see the licensing note in content/media.ts
           for why they come from Wikimedia Commons rather than Visit
-          Clarksville's gallery, and the DriftWall doc comment for why the
-          credits run underneath rather than on the tiles themselves.
+          Clarksville's gallery. Attribution lives in the lightbox each tile
+          opens into rather than on the page, so it stays reachable without
+          crowding this band with a credits line.
         */}
         <div className="driftwall-wrap">
           <DriftWall
@@ -113,9 +109,9 @@ export default function Home() {
             gap={16}
             radius={12}
             fade={0.55}
+            parallax={0.3}
           />
         </div>
-        <DriftWallCredits items={NEIGHBORHOOD_PHOTOS} />
 
         <p style={{ marginTop: "2.5rem" }}>
           <Link href="/district" className="button button--primary">

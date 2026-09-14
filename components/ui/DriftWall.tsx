@@ -46,10 +46,8 @@ const columnFactor = (index: number, variance: number) => {
  * — alt is empty on every tile and the container is aria-hidden — but a
  * click still opens the full photograph in a lightbox, since that is a
  * plain pointer affordance rather than something a screen reader user needs
- * a tab stop for. The real, single copy of each photograph's credit lives in
- * the caption list a caller renders below the wall (see the home page's
- * neighbourhood section) and in the lightbox itself once a photo is open —
- * that is the reachable, once-per-photo version of the same information.
+ * a tab stop for. The lightbox is the one place a photograph's credit and
+ * licence are shown; the wall itself carries no attribution.
  */
 export default function DriftWall({
   items,
@@ -347,42 +345,5 @@ function DriftWallLightbox({ item, onClose }: { item: ReturnType<typeof getMedia
         )}
       </figure>
     </div>
-  )
-}
-
-/**
- * The photograph credits for a DriftWall — the one place its tiles'
- * attribution is actually reachable, since the wall itself is aria-hidden
- * and every tile's alt is empty (see the component doc above). Takes the
- * same `items` list, so there is one source of truth for which photographs
- * are on the wall and one place their licences are declared: content/media.ts.
- */
-export function DriftWallCredits({ items }: { items: readonly DriftWallItem[] }) {
-  const credits = useMemo(() => {
-    const seen = new Set<string>()
-    const out: { id: string; author: string; source: string }[] = []
-    for (const item of items) {
-      const media = getMedia(item.id)
-      if (media.license && !seen.has(media.id)) {
-        seen.add(media.id)
-        out.push({ id: media.id, author: media.license.author, source: media.license.source })
-      }
-    }
-    return out
-  }, [items])
-
-  if (credits.length === 0) return null
-
-  return (
-    <p className="driftwall-credits">
-      Photographs:{" "}
-      {credits.map((credit, i) => (
-        <span key={credit.id}>
-          <a href={credit.source}>{credit.author}</a>
-          {i < credits.length - 1 ? " · " : ""}
-        </span>
-      ))}
-      {" — licensed via Wikimedia Commons."}
-    </p>
   )
 }
