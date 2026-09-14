@@ -595,6 +595,13 @@ p { text-wrap: pretty; max-width: var(--measure); }
   height: clamp(28rem, 58vw, 44rem);
   margin-top: 2.5rem;
 }
+/* On a computer, give the wall a much larger share of the screen — most of
+   the viewport's height, not just a band sized off its width. */
+@media (min-width: 64rem) {
+  .driftwall-wrap {
+    height: clamp(36rem, 88vh, 76rem);
+  }
+}
 .drift-wall {
   position: relative;
   width: 100%;
