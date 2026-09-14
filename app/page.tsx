@@ -2,10 +2,26 @@ import Link from "next/link"
 import Section from "@/components/ui/Section"
 import Figure from "@/components/ui/Figure"
 import BrandSeal from "@/components/ui/BrandSeal"
-import PhotoStrip from "@/components/ui/PhotoStrip"
+import DriftWall, { DriftWallCredits, type DriftWallItem } from "@/components/ui/DriftWall"
 import StatRow from "@/components/ui/StatRow"
 import { getProject } from "@/lib/data/project"
 import { placeholder } from "@/lib/content"
+
+/** The neighbourhood photographs — see the licensing note in content/media.ts. */
+const NEIGHBORHOOD_PHOTOS: readonly DriftWallItem[] = [
+  { id: "franklin-street-roxy-day" },
+  { id: "franklin-street-roxy-night" },
+  { id: "cumberland-riverfront" },
+  { id: "clarksville-downtown-mural" },
+  { id: "clarksville-federal-building" },
+  { id: "clarksville-rivercenter" },
+  { id: "clarksville-aerial-bend" },
+  { id: "cumberland-swing-bridge" },
+  { id: "smith-trahern-mansion" },
+  { id: "clarksville-ln-depot" },
+  { id: "montgomery-county-courthouse" },
+  { id: "madison-street-house" },
+]
 
 export default function Home() {
   const { name, tagline, address, acres, hotelRooms, retailSquareFeet, parkingSpaces, arena } = getProject()
@@ -80,23 +96,26 @@ export default function Home() {
         </p>
         {/*
           The neighbourhood, actually photographed. Everything else on this
-          page is a rendering of a block that is not built yet; these five
-          are photographs of places that already exist a short walk away,
-          which is the whole argument this band is making. Each one is
-          licensed from its photographer and carries the credit — see the
-          licensing note in content/media.ts for why they come from Wikimedia
-          Commons rather than Visit Clarksville's gallery.
+          page is a rendering of a block that is not built yet; these are
+          photographs of places that already exist a short walk away, which
+          is the whole argument this band is making. Each one is licensed
+          from its photographer — see the licensing note in content/media.ts
+          for why they come from Wikimedia Commons rather than Visit
+          Clarksville's gallery, and the DriftWall doc comment for why the
+          credits run underneath rather than on the tiles themselves.
         */}
-        <PhotoStrip
-          label="Photographs of downtown Clarksville"
-          items={[
-            { id: "franklin-street-roxy-day", caption: "Franklin Street and the Roxy Regional Theatre" },
-            { id: "franklin-street-roxy-night", caption: "Franklin Street after dark" },
-            { id: "cumberland-riverfront", caption: "The Cumberland riverfront" },
-            { id: "clarksville-downtown-mural", caption: "The downtown mural" },
-            { id: "clarksville-federal-building", caption: "The 1935 Federal Building" },
-          ]}
-        />
+        <div className="driftwall-wrap">
+          <DriftWall
+            items={NEIGHBORHOOD_PHOTOS}
+            columns={5}
+            tileWidth={200}
+            tileHeight={150}
+            gap={16}
+            radius={12}
+            fade={0.55}
+          />
+        </div>
+        <DriftWallCredits items={NEIGHBORHOOD_PHOTOS} />
 
         <p style={{ marginTop: "2.5rem" }}>
           <Link href="/district" className="button button--primary">

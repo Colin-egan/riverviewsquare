@@ -281,6 +281,12 @@ export const media = [
    * names — Franklin Street, the Roxy, the Cumberland. Generic stock of some
    * other town's brewery captioned as Clarksville would break the same
    * no-invented-facts rule from the other direction.
+   *
+   * A second batch of seven was added on 2026-09-14, same source and the
+   * same downscale-to-1200px treatment, to give the home page's drifting
+   * photo wall enough tiles that its columns don't loop visibly. Real
+   * downtown landmarks again — the RiverCenter, the courthouse, the
+   * Smith-Trahern mansion — not generic Tennessee stock.
    */
   {
     id: "franklin-street-roxy-day",
@@ -359,6 +365,111 @@ export const media = [
       url: "https://creativecommons.org/licenses/by/4.0/",
       source: "https://commons.wikimedia.org/wiki/File:1935_Clarksville,_TN_Post_Office.jpg",
       author: "Just an image guy",
+    },
+  },
+  {
+    id: "clarksville-rivercenter",
+    src: "/media/clarksville-rivercenter-plaza.jpg",
+    alt: "The Cumberland RiverCenter amphitheatre in downtown Clarksville: a green-roofed pavilion with a wrought-iron arch lettered 'Cumberland RiverCenter', tiered concrete steps rising toward it, and 'CLARKSVILLE' carved into the retaining wall in front, under a clear evening sky.",
+    width: 1200,
+    height: 900,
+    credit: null,
+    era: "current",
+    license: {
+      name: "CC BY-SA 4.0",
+      url: "https://creativecommons.org/licenses/by-sa/4.0/",
+      source: "https://commons.wikimedia.org/wiki/File:Clarksville.jpg",
+      author: "CleanAirClarksville",
+    },
+  },
+  {
+    id: "clarksville-aerial-bend",
+    src: "/media/clarksville-aerial-river-bend.jpg",
+    alt: "An aerial view of downtown Clarksville cupped inside a wide bend of the Cumberland River, dense city blocks at the centre giving way to wooded hills and farmland along the water's edge.",
+    width: 1200,
+    height: 900,
+    credit: null,
+    era: "current",
+    license: {
+      name: "CC BY-SA 4.0",
+      url: "https://creativecommons.org/licenses/by-sa/4.0/",
+      source: "https://commons.wikimedia.org/wiki/File:Aerial_view_of_Clarksville,_Tennessee,_October_2020.JPG",
+      author: "Pi.1415926535",
+    },
+  },
+  {
+    id: "cumberland-swing-bridge",
+    src: "/media/cumberland-river-swing-bridge.jpg",
+    alt: "The Cumberland River Swing Bridge, a dark steel truss railroad bridge crossing the river under a pale winter sky, seen past a chain-link fence and the metal roofs of riverside warehouses.",
+    width: 1200,
+    height: 675,
+    credit: null,
+    era: "current",
+    license: {
+      name: "CC BY 4.0",
+      url: "https://creativecommons.org/licenses/by/4.0/",
+      source: "https://commons.wikimedia.org/wiki/File:Cumberland_River_Swing_Bridge.jpg",
+      author: "Just an image guy",
+    },
+  },
+  {
+    id: "smith-trahern-mansion",
+    src: "/media/smith-trahern-mansion.jpg",
+    alt: "A grand red brick Italianate mansion with tall white Corinthian columns, arched third-storey windows, wrought-iron balconies and a wide flight of stone steps up through the front lawn, under a pink evening sky.",
+    width: 1200,
+    height: 1056,
+    credit: null,
+    era: "current",
+    license: {
+      name: "CC BY-SA 4.0",
+      url: "https://creativecommons.org/licenses/by-sa/4.0/",
+      source: "https://commons.wikimedia.org/wiki/File:SmithTrahern.jpg",
+      author: "Roxannejenkins80",
+    },
+  },
+  {
+    id: "clarksville-ln-depot",
+    src: "/media/clarksville-ln-depot.jpg",
+    alt: "The former Louisville and Nashville Railroad depot in Clarksville: a low cream clapboard building with a green metal roof, a brick chimney and a covered platform, snow dusting the ground beside the tracks.",
+    width: 1200,
+    height: 675,
+    credit: null,
+    era: "current",
+    license: {
+      name: "CC BY 4.0",
+      url: "https://creativecommons.org/licenses/by/4.0/",
+      source: "https://commons.wikimedia.org/wiki/File:L%26N_Depot_Clarksville.jpg",
+      author: "Just an image guy",
+    },
+  },
+  {
+    id: "montgomery-county-courthouse",
+    src: "/media/montgomery-county-courthouse.jpg",
+    alt: "The Montgomery County Courthouse in downtown Clarksville: a red brick and limestone Victorian building with a tall clock tower topped by a weathervane, seen across a street-corner intersection with traffic signals and young trees.",
+    width: 1200,
+    height: 900,
+    credit: null,
+    era: "current",
+    license: {
+      name: "Public domain",
+      url: null,
+      source: "https://commons.wikimedia.org/wiki/File:Clarksville022.jpg",
+      author: "Tenn2",
+    },
+  },
+  {
+    id: "madison-street-house",
+    src: "/media/madison-street-historic-house.jpg",
+    alt: "A two-storey red brick Colonial Revival house in Clarksville's Madison Street Historic District, with tall white Ionic columns supporting an upper balcony, and a vintage red Chevrolet wagon parked in the driveway.",
+    width: 1200,
+    height: 900,
+    credit: null,
+    era: "current",
+    license: {
+      name: "CC BY-SA 3.0",
+      url: "https://creativecommons.org/licenses/by-sa/3.0/",
+      source: "https://commons.wikimedia.org/wiki/File:Madison_Street_Historic_District.JPG",
+      author: "Sbugsyk",
     },
   },
 ] as const satisfies readonly MediaItem[]

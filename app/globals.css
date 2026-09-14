@@ -565,69 +565,180 @@ p { text-wrap: pretty; max-width: var(--measure); }
 
 /*
  * ---------------------------------------------------------------------------
- * Photo strip — a row of pictures that scrolls sideways.
+ * Drift wall — an ambient, slowly drifting wall of photographs.
  * ---------------------------------------------------------------------------
  *
- * Used on the home page's neighbourhood band, where the argument is "these
- * places already exist" and the evidence is photographs rather than
- * renderings. See components/ui/PhotoStrip.tsx for why it carries no arrow
- * buttons and no autoplay.
+ * Replaces the photo strip on the home page's neighbourhood band. Unlike the
+ * strip, this is texture rather than content: the same handful of source
+ * photographs repeat many times down each column to loop seamlessly, so it
+ * is marked aria-hidden in components/ui/DriftWall.tsx and every tile's alt
+ * is empty. The reachable, once-per-photo version of the credits is the
+ * caption list a caller renders underneath — see the home page.
  *
- * The track is allowed to run out through the band's right-hand gutter and
- * off the viewport edge: a row that ends flush inside the measure looks
- * finished, and a strip nobody realises is a strip is just a cropped photo.
- * The negative margin is matched by padding so the first card still lines up
- * with the heading above it.
+ * The hover lift is plain :hover rather than JS-driven state: the tiles sit
+ * inside a 3D-transformed plane (drift-wall__plane carries the perspective
+ * rotation), but the browser's hit-testing already accounts for that, so no
+ * elementFromPoint bookkeeping is needed just to know which tile the pointer
+ * is over.
  */
-.strip {
+.driftwall-wrap {
+  position: relative;
+  height: clamp(22rem, 48vw, 34rem);
   margin-top: 2.5rem;
-  margin-inline-end: calc(-1 * clamp(1rem, 4vw, 3rem));
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  scroll-snap-type: x proximity;
-  /* Room for the scrollbar so it never sits on top of a credit line. */
-  padding-bottom: 0.75rem;
 }
-.strip__track {
-  display: flex;
-  gap: 1.5rem;
-  list-style: none;
-  margin: 0;
-  padding: 0 clamp(1rem, 4vw, 3rem) 0 0;
-}
-.strip__item {
-  flex: 0 0 auto;
-  width: clamp(15rem, 72vw, 22rem);
-  scroll-snap-align: start;
-}
-.strip__item img {
+.drift-wall {
+  position: relative;
   width: 100%;
-  height: auto;
-  /* One shape for five photographs that arrive in three different ratios —
-     without this the row's baseline wanders and the captions stop aligning. */
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
+  height: 100%;
+  overflow: hidden;
+  perspective: var(--dw-perspective, 1200px);
+  perspective-origin: 50% 50%;
+  --dw-tile-w: 200px;
+  --dw-tile-h: 132px;
+  --dw-gap: 18px;
+  --dw-radius: 14px;
+  --dw-lift: 64px;
+  --dw-dim: 0.55;
+  --dw-overlay: var(--color-ink);
+  --dw-edge: 40%;
+  -webkit-mask-image:
+    radial-gradient(ellipse 78% 82% at 50% 46%, #000 var(--dw-edge), transparent 100%),
+    linear-gradient(to top, #000 var(--dw-edge), transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    radial-gradient(ellipse 78% 82% at 50% 46%, #000 var(--dw-edge), transparent 100%),
+    linear-gradient(to top, #000 var(--dw-edge), transparent 100%);
+  mask-composite: intersect;
+}
+.drift-wall__plane {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  flex-direction: row;
+  transform-style: preserve-3d;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+.drift-wall__col {
+  position: relative;
+  width: calc(var(--dw-tile-w) + var(--dw-gap));
+  transform-style: preserve-3d;
+}
+.drift-wall__track {
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+  transform-style: preserve-3d;
+}
+.drift-wall__tile {
+  position: relative;
   display: block;
+  width: 100%;
+  height: calc(var(--dw-tile-h) + var(--dw-gap));
+  flex: 0 0 auto;
+  transform-style: preserve-3d;
+  cursor: pointer;
+}
+.drift-wall__inner {
+  position: absolute;
+  inset: calc(var(--dw-gap) / 2);
+  display: block;
+  border-radius: var(--dw-radius);
+  overflow: hidden;
+  background: var(--color-ink);
+  transform: translateZ(0);
+  transition:
+    transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.drift-wall__tile img {
+  object-fit: cover;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.drift-wall__tile:hover .drift-wall__inner {
+  transform: translateZ(var(--dw-lift));
+  box-shadow: 0 24px 60px -18px rgba(0, 0, 0, 0.7);
+}
+@media (prefers-reduced-motion: reduce) {
+  .drift-wall__plane,
+  .drift-wall__track {
+    will-change: auto;
+  }
 }
 /*
- * The credits are the one place on this site where a link has to look like a
- * link: they are how a reader checks the attribution, and they are also what
- * makes the strip keyboard-scrollable. Everything else here inherits
- * Tailwind's preflight, which strips underlines — so put one back explicitly
- * rather than relying on a colour these can't have on a green ground.
+ * The photograph credits underneath the wall — the one place these tiles'
+ * attribution is reachable without opening one (see the comment in
+ * components/ui/DriftWall.tsx). Same link treatment as .strip a, for the
+ * same reason: Tailwind's preflight strips underlines, and a credit has to
+ * look like a link to read as one.
  */
-.strip a {
+.driftwall-credits {
+  margin-top: 1rem;
+  font-size: 0.8125rem;
+  opacity: 0.8;
+}
+.driftwall-credits a {
   color: inherit;
   text-decoration: underline;
   text-underline-offset: 0.2em;
   text-decoration-thickness: 1px;
 }
-.strip .figure__caption { max-width: none; }
-/* The credit sits under the place name rather than running on from it: it is
-   a different kind of statement, and at this width they would otherwise wrap
-   into one grey blur. */
-.strip .figure__credit { display: block; margin-top: 0.35rem; white-space: normal; }
 
+/*
+ * The lightbox a tile opens into. Fixed to the viewport, not to .drift-wall
+ * — see the doc comment on DriftWallLightbox for why it has to live outside
+ * that ancestor's DOM subtree.
+ */
+.driftwall-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: clamp(1rem, 4vw, 3rem);
+  background: rgba(11, 26, 22, 0.92);
+}
+.driftwall-lightbox__figure {
+  margin: 0;
+  max-width: 92vw;
+  cursor: default;
+}
+.driftwall-lightbox__img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 92vw;
+  max-height: 80vh;
+  border-radius: var(--radius-media);
+  object-fit: contain;
+}
+.driftwall-lightbox__caption {
+  margin-top: 0.75rem;
+  color: var(--color-paper);
+  font-size: 0.8125rem;
+}
+.driftwall-lightbox__caption a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
+}
+.driftwall-lightbox__close {
+  position: fixed;
+  top: clamp(1rem, 3vw, 2rem);
+  right: clamp(1rem, 3vw, 2rem);
+  border: 1px solid var(--color-paper);
+  background: transparent;
+  color: var(--color-paper);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+.driftwall-lightbox__close:hover {
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
 
 /*
  * ---------------------------------------------------------------------------
@@ -655,8 +766,7 @@ p { text-wrap: pretty; max-width: var(--measure); }
  *   Logos and the map — chrome and a widget, not photography.
  */
 .mediapair img,
-.thennow img,
-.strip__item img {
+.thennow img {
   border-radius: var(--radius-media);
 }
 /* The placeholder box a Figure renders for an undelivered shot takes the same
