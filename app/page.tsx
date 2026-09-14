@@ -103,11 +103,11 @@ export default function Home() {
         <div className="driftwall-wrap">
           <DriftWall
             items={NEIGHBORHOOD_PHOTOS}
-            columns={5}
-            tileWidth={200}
-            tileHeight={150}
-            gap={16}
-            radius={12}
+            columns={4}
+            tileWidth={320}
+            tileHeight={240}
+            gap={22}
+            radius={18}
             fade={0.55}
             parallax={0.3}
           />
